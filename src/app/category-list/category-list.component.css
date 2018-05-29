@@ -1,0 +1,43 @@
+.sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 100%;
+  width: 20rem;
+  background: snow;
+  padding: 1rem;
+  box-shadow: 0 0.3rem 0.5rem 0 rgba(0, 0, 0, 0.2), 0 0.3rem 1.2rem 0 rgba(0, 0, 0, 0.19);
+}
+
+.sidebar div {
+  margin-left: 0.3rem;
+}
+
+a {
+  text-decoration: none;
+  line-height: 2rem;
+  color: #39424c;
+}
+
+a:hover {
+  text-decoration: none;
+  line-height: 2rem;
+  color: #272a2d;
+
+}
+
+.fa {
+  width: 1rem;
+  height: auto;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.fa:hover {
+  font-weight: bolder;
+}
+
+.active {
+  transform: rotate(270deg);
+}

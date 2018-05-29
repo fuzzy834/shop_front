@@ -1,0 +1,26 @@
+form {
+  margin-top: 3rem;
+}
+
+input, textarea, select {
+  outline: none;
+  box-shadow:none !important;
+  border:1px solid #ccc !important;
+}
+
+.input-group-prepend .input-group-text {
+  min-width: 9rem;
+}
+
+input[type='number'] {
+  -moz-appearance:textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.container {
+  height: 100vh;
+}

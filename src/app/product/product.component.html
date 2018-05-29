@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="row justify-content-lg-center">
+    <div class="banner-left col-lg-6 col-sm-12">
+      <div id="carousel" class="carousel slide col-9 pull-right" data-interval="false">
+        <div class="carousel-big carousel-inner" tabindex="0">
+          <div class="carousel-item" *ngFor="let image of product.images; let i = index" [attr.data-index]="i"
+               [ngClass]="{active : i==0}">
+            <img [src]="image" class="d-flex mx-auto img-fluid" (click)="$event.target.focus()">
+          </div>
+        </div>
+      </div>
+      <div class="carousel slide col-3 pull-left" data-interval="false">
+        <div class="carousel-inner">
+          <div class="item">
+            <div data-target="#carousel" *ngFor="let image of product.images; let i = index" [attr.data-index]="i"
+                 [attr.data-slide-to]="i">
+              <img [src]="image" class="img-thumbnail">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-info col-lg-6 col-sm-12">
+      <div class="story-content">
+        <h4 class="badge badge-dark">{{product.category.name}}</h4>&nbsp;
+        <h4 *ngIf="product.discount > 0" class="badge badge-danger">-{{product.discount}}%</h4>
+        <h3>{{product.name}}</h3>
+        <p>{{product.description}}</p>
+        <p>Роздрібна ціна: <s *ngIf="product.discount > 0">{{product.retailPrice}} {{product.currency}}</s>
+          {{getPriceWithDiscount(product.retailPrice)}}<span>{{product.currency}}</span></p>
+        <p>Оптова ціна: <s *ngIf="product.discount > 0">{{product.bulkPrice}} {{product.currency}}</s>
+          {{getPriceWithDiscount(product.bulkPrice)}}<span>{{product.currency}}</span></p>
+        <button type="button" class="btn btn-success"><i class="fa fa-shopping-bag"></i>&nbsp;&nbsp;Додати в кошик
+        </button>
+        <br>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#features" (click)="changeText($event)">
+          <i class="fa fa-info-circle"></i>&nbsp;&nbsp;Показати деталі
+        </button>
+        <ul class="collapse list-group card card-body" id="features">
+          <li class="list-group-item" *ngFor="let attribute of product.attributes">
+            <span class="font-weight-bold ">{{attribute.name}}</span> : <span>{{attribute.value}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+

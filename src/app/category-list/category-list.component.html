@@ -1,0 +1,15 @@
+<div [hidden]="!visible" class="sidebar">
+  <ng-template #recursiveList let-categories>
+    <div class="collapsible" *ngFor="let item of categories">
+      <i *ngIf="item.children.length > 0" (click)="toggleSub($event)" class="fa fa-angle-down active"></i>
+      <a [ngClass]="{root : item.parent == ''}" href="#">
+        {{item.name}}
+      </a>
+      <hr>
+      <div *ngIf="item.children.length > 0">
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.children }"></ng-container>
+      </div>
+    </div>
+  </ng-template>
+  <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: categories }"></ng-container>
+</div>

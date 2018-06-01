@@ -1,4 +1,7 @@
-import {Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+  AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, Input, OnInit, ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {UploadImage} from '../../model/image';
 import {Product} from '../../model/product';
@@ -6,8 +9,8 @@ import {Category} from '../../model/category';
 import {Attribute} from '../../model/attribute';
 import {AttributeSelectorComponent} from './attribute-selector/attribute-selector.component';
 import {ProductAttribute} from '../../model/product.attribute';
-
-declare var $: any;
+import {LanguageService} from '../language.service';
+import {Language} from '../../model/language';
 
 @Component({
   selector: 'app-product-management',
@@ -15,7 +18,10 @@ declare var $: any;
   styleUrls: ['./product-management.component.css'],
   entryComponents: [AttributeSelectorComponent]
 })
-export class ProductManagementComponent implements OnInit {
+export class ProductManagementComponent implements OnInit{
+
+  languages: Language[];
+  lang: Language;
 
   attributeCount = 0;
   attributeRefs: any[] = [];
@@ -28,7 +34,9 @@ export class ProductManagementComponent implements OnInit {
   product: Product = new Product();
   imagesToUpload: UploadImage[] = [];
 
-  constructor(private sanitization: DomSanitizer, private resolver: ComponentFactoryResolver) {
+  constructor(private sanitization: DomSanitizer, private resolver: ComponentFactoryResolver, private languageService: LanguageService) {
+    this.languages = languageService.languages;
+    languageService.lang.subscribe(lang => this.lang = lang);
   }
 
   ngOnInit() {
@@ -63,7 +71,7 @@ export class ProductManagementComponent implements OnInit {
     this.attributeCount++;
   }
 
-  private addProductAttribute(productAttribute: ProductAttribute) {
+  addProductAttribute(productAttribute: ProductAttribute) {
     if (this.product.attributes === undefined) {
       this.product.attributes = [];
     }
@@ -74,7 +82,7 @@ export class ProductManagementComponent implements OnInit {
     this.product.attributes.push(productAttribute);
   }
 
-  private deleteAttribute(id: string, index: number) {
+  deleteAttribute(id: string, index: number) {
     this.attributeRefs[index].destroy();
     this.attributeRefs.splice(index, 1);
     if (this.product.attributes !== undefined) {
@@ -85,19 +93,24 @@ export class ProductManagementComponent implements OnInit {
     }
   }
 
-  private sanitizeUrl(url: string): SafeUrl {
+  sanitizeUrl(url: string): SafeUrl {
     return this.sanitization.bypassSecurityTrustUrl(url);
   }
 
-  private createTempUrl(file: File): string {
+  createTempUrl(file: File): string {
     return window.URL.createObjectURL(file);
   }
 
-  private sanitizeFileUrl(file: File): SafeUrl {
+  sanitizeFileUrl(file: File): SafeUrl {
     return this.sanitizeUrl(this.createTempUrl(file));
   }
 
-  private assignCategory(category: Category) {
+  assignCategory(category: Category) {
     this.product.category = category;
+  }
+
+  submitProduct(form: HTMLFormElement) {
+    console.log(form.elements);
+    console.log(this.product);
   }
 }

@@ -1,17 +1,15 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, AfterViewInit} from '@angular/core';
 import {Category} from '../../model/category';
 import {Attribute} from '../../model/attribute';
 import {Value} from '../../model/value';
 import {SidebarToggleService} from '../sidebar-toggle.service';
-
-declare var $: any;
 
 @Component({
   selector: 'app-category-list',
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.css']
 })
-export class CategoryListComponent implements OnInit {
+export class CategoryListComponent implements OnInit, AfterViewInit {
 
   visible: boolean;
 
@@ -24,9 +22,19 @@ export class CategoryListComponent implements OnInit {
     this.toggle.observable.subscribe(visible => this.visible = visible);
   }
 
-  toggleSub(event) {
-    const target = $(event.target);
-    target.parent('div').find('div').toggle();
-    target.toggleClass('active');
+  ngAfterViewInit() {
+    const roots: NodeListOf<Element> = document.querySelectorAll('.active');
+    Array.from(roots).forEach(root => this.toggleSub(root));
+  }
+
+  toggleSub(target) {
+    const parent = target.parentElement;
+    const el = parent.children;
+    Array.from(el).forEach(e => {
+      if (e['nodeName'] === 'DIV') {
+        e['style'].display = (e['style'].display === 'none') ? 'block' : 'none';
+      }
+    });
+    target.classList.toggle('active');
   }
 }

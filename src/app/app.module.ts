@@ -12,6 +12,9 @@ import { ProductManagementComponent } from './product-management/product-managem
 import { FormsModule } from '@angular/forms';
 import { AttributeSelectorComponent } from './product-management/attribute-selector/attribute-selector.component';
 import { CategoriesSelectorComponent } from './product-management/categories-selector/categories-selector.component';
+import { CategoryManagementComponent } from './product-management/category-management/category-management.component';
+import { LanguageSwitcherComponent } from './header/language-switcher/language-switcher.component';
+import { TranslatedInputComponent } from './product-management/translated-input/translated-input.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { CategoriesSelectorComponent } from './product-management/categories-sel
     PageContentComponent,
     ProductManagementComponent,
     AttributeSelectorComponent,
-    CategoriesSelectorComponent
+    CategoriesSelectorComponent,
+    CategoryManagementComponent,
+    LanguageSwitcherComponent,
+    TranslatedInputComponent
   ],
   imports: [
     BrowserModule,

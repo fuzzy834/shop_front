@@ -23,7 +23,7 @@ export class CatalogComponent implements OnInit {
     const attr4: ProductAttribute = new ProductAttribute('4', 4, 'attribute4', 'value4');
     const attr5: ProductAttribute = new ProductAttribute('5', 5, 'attribute5', 'value5');
 
-    const category: Category = new Category('1', 'category1', '', [], []);
+    const category: Category = new Category('1', 'category1', null, [], []);
 
     const name = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
 

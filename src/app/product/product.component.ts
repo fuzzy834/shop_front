@@ -4,8 +4,6 @@ import { ProductAttribute } from '../../model/product.attribute';
 import { FormsModule } from '@angular/forms';
 import {Category} from '../../model/category';
 
-declare var $: any;
-
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -26,7 +24,7 @@ export class ProductComponent implements OnInit {
     const attr4: ProductAttribute = new ProductAttribute('4', 4, 'attribute4', 'value4');
     const attr5: ProductAttribute = new ProductAttribute('5', 5, 'attribute5', 'value5');
 
-    const category: Category = new Category('1', 'category1', '', [], []);
+    const category: Category = new Category('1', 'category1', null, [], []);
 
     const name = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
 

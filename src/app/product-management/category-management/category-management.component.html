@@ -1,0 +1,39 @@
+<div>
+  <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#category-modal">Створити
+    категорію
+  </button>
+</div>
+
+<div class="modal fade" id="category-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Нова категорія</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form action="#" autocomplete="off">
+          <app-translated-input [obj]="category" [title]="'Категорія'" [name]="'category'"
+                                [textarea]="false"></app-translated-input>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Батьківська категорія</span>
+            </div>
+            <app-categories-selector [categories]="categories"
+                                     (selection)="assignParent($event)"></app-categories-selector>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="btn btn-group">
+          <button type="button" class="btn btn-outline-dark">Зберегти</button>
+          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Скасувати</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

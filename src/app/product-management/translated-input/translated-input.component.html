@@ -1,0 +1,31 @@
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">{{title}}</span>
+  </div>
+  <div *ngIf="textarea; else input">
+      <textarea class="form-control" type="text"
+                *ngFor="let language of languages"
+                (input)="obj.addTranslation($event.target.name, $event.target.value, $event.target.lang)"
+                [hidden]="language.code !== langSelect.value"
+                [name]="name"
+                [lang]="language.code"
+                [id]="name + '-' + language.code"></textarea>
+  </div>
+  <ng-template #input>
+    <input class="form-control" type="text"
+           *ngFor="let language of languages"
+           (input)="obj.addTranslation($event.target.name, $event.target.value, $event.target.lang)"
+           [hidden]="language.code !== langSelect.value"
+           [name]="name"
+           [lang]="language.code"
+           [id]="name + '-' + language.code">
+  </ng-template>
+  <div class="input-group-append">
+              <span class="input-group-text">
+                <select class="custom-select translation" (change)="cd.detectChanges()" #langSelect>
+                  <option *ngFor="let language of languages" [value]="language.code">{{language.name}}</option>
+                </select>
+              </span>
+  </div>
+</div>
+

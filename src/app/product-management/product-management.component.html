@@ -1,23 +1,15 @@
 <div class="container">
   <div class="row">
     <div class="col-8">
-      <form action="#" autocomplete="off">
+      <form (submit)="submitProduct($event.target)" action="#" autocomplete="off">
         <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Назва продукту</span>
-            </div>
-            <input id="product-name" class="form-control" type="text" [(ngModel)]="product.name" name="name">
-          </div>
+          <app-translated-input [obj]="product" [title]="'Назва продукту'" [name]="'name'" [textarea]="false">
+          </app-translated-input>
         </div>
         <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Опис продукту</span>
-            </div>
-            <textarea id="product-description" class="form-control" [(ngModel)]="product.description"
-                      name="description"></textarea>
-          </div>
+          <app-translated-input [obj]="product" [title]="'Опис продукту'" [name]="'description'"
+                                [textarea]="true">
+          </app-translated-input>
         </div>
         <div class="form-group">
           <div class="input-group">
@@ -65,9 +57,10 @@
         <div class="form-group">
           <div class="input-group">
             <div class="input-group-prepend">
-              <span class="input-group-text">Категорія: </span>
+              <span class="input-group-text">Категорія</span>
             </div>
-            <app-categories-selector [categories]="categories" (selection)="assignCategory($event)"></app-categories-selector>
+            <app-categories-selector [categories]="categories"
+                                     (selection)="assignCategory($event)"></app-categories-selector>
           </div>
         </div>
         <div class="form-group">
@@ -75,9 +68,9 @@
         </div>
         <template #attributeContainer></template>
         <div class="form-group">
-            <input title="" hidden id="product-image" type="file" (change)="setFiles($event)" accept=".jpg, .jpeg, .png"
-                   multiple #fileInput>
-            <button type="button" class="btn btn-outline-dark" (click)="fileInput.click()">Завантажити зображення</button>
+          <input title="" hidden id="product-image" type="file" (change)="setFiles($event)" accept=".jpg, .jpeg, .png"
+                 multiple #fileInput>
+          <button type="button" class="btn btn-outline-dark" (click)="fileInput.click()">Завантажити зображення</button>
         </div>
         <div class="form-group">
           <ul class="list-group list-group-flush" #imageContainer [hidden]="imageContainer.children.length === 0">
@@ -100,6 +93,9 @@
           </div>
         </div>
       </form>
+    </div>
+    <div class="col-4 pull-right">
+      <app-category-management [categories]="categories"></app-category-management>
     </div>
   </div>
 </div>

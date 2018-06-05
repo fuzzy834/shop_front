@@ -1,0 +1,13 @@
+.badge {
+  margin: 0.5rem;
+}
+
+.times {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.times:hover {
+  color: gray;
+}
+

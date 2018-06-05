@@ -1,0 +1,68 @@
+<ul class="list-group list-group-flush">
+  <li *ngFor="let attr of attributes" class="list-group-item">
+    {{attr.name}}
+    <div class="btn-group pull-right">
+      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-trash"></i></button>
+    </div>
+  </li>
+</ul>
+<br>
+<div>
+  <button type="button" data-toggle="modal" data-target="#attribute-modal" class="btn btn-outline-dark">Створити
+    атрибут
+  </button>
+</div>
+
+<div class="modal fade" id="attribute-modal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Новий атрибут</h5>
+        <button type="button" class="close" data-dismiss="modal" data-target="#attribute-modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="#" autocomplete="off">
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Пріорітет</span>
+              </div>
+              <input type="number" min="0" max="100" [(ngModel)]="attribute.priority" name="priority">
+            </div>
+          </div>
+          <div class="form-group">
+            <app-translated-input [obj]="attribute" [title]="'Атрибут'" [name]="'attribute'" [textarea]="false">
+            </app-translated-input>
+          </div>
+          <div class="form-group">
+            <app-attribute-value [attribute]="attribute" (valueEmitter)="addValue($event)"></app-attribute-value>
+            <br><br>
+            <ul class="list-group" id="attribute-values">
+              <li class="list-group-item" *ngFor="let value of attribute.values">
+                <div class="row">
+                  <div class="col-3">{{value.i18n['value'][langIndex].value}}</div>
+                  <div class="input-group col-6">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Категорія</span>
+                    </div>
+                    <app-categories-selector [categories]="categories"></app-categories-selector>
+                  </div>
+                  <div class="btn-group col-3">
+                      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-pencil"></i></button>
+                      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-trash"></i></button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark">Зберегти</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,23 +2,17 @@
   <div class="input-group-prepend">
     <span class="input-group-text">{{title}}</span>
   </div>
-  <div *ngIf="textarea; else input">
-      <textarea class="form-control" type="text"
-                *ngFor="let language of languages"
+  <div *ngIf="textarea; else input" class="textarea-container">
+      <textarea class="form-control" type="text" *ngFor="let language of languages"
                 (input)="obj.addTranslation($event.target.name, $event.target.value, $event.target.lang)"
-                [hidden]="language.code !== langSelect.value"
-                [name]="name"
-                [lang]="language.code"
-                [id]="name + '-' + language.code"></textarea>
+                [hidden]="language.code !== langSelect.value" [value]="getValue(language.code)"
+                [name]="name" [lang]="language.code" [id]="name + '-' + language.code"></textarea>
   </div>
   <ng-template #input>
-    <input class="form-control" type="text"
-           *ngFor="let language of languages"
+    <input class="form-control" type="text" *ngFor="let language of languages"
            (input)="obj.addTranslation($event.target.name, $event.target.value, $event.target.lang)"
-           [hidden]="language.code !== langSelect.value"
-           [name]="name"
-           [lang]="language.code"
-           [id]="name + '-' + language.code">
+           [hidden]="language.code !== langSelect.value" [value]="getValue(language.code)"
+           [name]="name" [lang]="language.code" [id]="name + '-' + language.code">
   </ng-template>
   <div class="input-group-append">
               <span class="input-group-text">

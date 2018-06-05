@@ -15,6 +15,9 @@ import { CategoriesSelectorComponent } from './product-management/categories-sel
 import { CategoryManagementComponent } from './product-management/category-management/category-management.component';
 import { LanguageSwitcherComponent } from './header/language-switcher/language-switcher.component';
 import { TranslatedInputComponent } from './product-management/translated-input/translated-input.component';
+import { StructureManagementComponent } from './product-management/structure-management/structure-management.component';
+import { AttributeManagementComponent } from './product-management/attribute-management/attribute-management.component';
+import { AttributeValueComponent } from './product-management/attribute-management/attribute-value/attribute-value.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { TranslatedInputComponent } from './product-management/translated-input/
     CategoriesSelectorComponent,
     CategoryManagementComponent,
     LanguageSwitcherComponent,
-    TranslatedInputComponent
+    TranslatedInputComponent,
+    StructureManagementComponent,
+    AttributeManagementComponent,
+    AttributeValueComponent
   ],
   imports: [
     BrowserModule,

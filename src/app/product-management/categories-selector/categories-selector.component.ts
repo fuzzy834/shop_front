@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Category} from '../../../model/category';
 
 @Component({
@@ -8,9 +8,11 @@ import {Category} from '../../../model/category';
 })
 export class CategoriesSelectorComponent implements OnInit {
 
-  @Input() categories: Category[];
-  @Output() selection = new EventEmitter<Category>();
   categoriesFlat: Category[] = [];
+
+  @Input() categories: Category[];
+  @Input() selectedId: string;
+  @Output() selection = new EventEmitter<Category>();
 
   constructor() {
   }
@@ -30,8 +32,7 @@ export class CategoriesSelectorComponent implements OnInit {
 
   onCategorySelected(event) {
     const id: string = event.target.value;
-    const category: Category = this.categoriesFlat.find(c => c.id === id);
+    const category: Category = this.categories.find(c => c.id === id);
     this.selection.emit(category);
   }
-
 }

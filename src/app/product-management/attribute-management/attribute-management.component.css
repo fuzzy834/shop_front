@@ -1,0 +1,11 @@
+.badge {
+  margin: 0.5rem;
+}
+
+.btn-group {
+  justify-content: flex-end;
+}
+
+input {
+  flex-grow: 1;
+}

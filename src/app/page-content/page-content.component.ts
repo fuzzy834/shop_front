@@ -35,19 +35,19 @@ export class PageContentComponent implements OnInit {
 
     this.attributes = attributes;
 
-    const c1: Category = new Category('1', 'category1', null, attributes, []);
+    const c1: Category = new Category('1', 'category1', null, [a1, a3], []);
     const c2: Category = new Category('2', 'category2', c1, attributes, []);
-    const c3: Category = new Category('3', 'category3', c2, attributes, []);
-    const c4: Category = new Category('4', 'category4', c3, attributes, []);
-    const c5: Category = new Category('5', 'category5', c4, attributes, []);
+    const c3: Category = new Category('3', 'category3', c2, [a5, a2], []);
+    const c4: Category = new Category('4', 'category4', c3, [a1, a2], []);
+    const c5: Category = new Category('5', 'category5', c4, [a4, a3], []);
 
     c1.children.push(c2);
     c2.children.push(c3);
     c3.children.push(c4);
     c4.children.push(c5);
 
-    const c6: Category = new Category('6', 'category6', null, attributes, []);
-    const c7: Category = new Category('7', 'category7', c6, attributes, []);
+    const c6: Category = new Category('6', 'category6', null, [], []);
+    const c7: Category = new Category('7', 'category7', c6, [a3, a5], []);
     const c8: Category = new Category('8', 'category8', c7, attributes, []);
     const c9: Category = new Category('9', 'category9', c8, attributes, []);
     const c10: Category = new Category('10', 'category10', c9, attributes, []);

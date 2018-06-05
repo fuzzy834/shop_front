@@ -1,7 +1,7 @@
 <div [hidden]="!visible" class="sidebar">
   <ng-template #recursiveList let-categories>
     <div class="collapsible" *ngFor="let item of categories">
-      <i *ngIf="item.children.length > 0" (click)="toggleSub($event.target)" class="fa fa-angle-down active"></i>
+      <i *ngIf="item.children.length > 0" (click)="toggleSub($event.target)" class="fa fa-angle-down unfolded"></i>
       <a [ngClass]="{root : item.parent === null}" href="#">
         {{item.name}}
       </a>

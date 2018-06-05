@@ -8,3 +8,7 @@ input, textarea, select {
   box-shadow:none !important;
   border:1px solid #ccc !important;
 }
+
+.textarea-container {
+  flex-grow: 1;
+}

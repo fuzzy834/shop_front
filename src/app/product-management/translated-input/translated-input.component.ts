@@ -2,6 +2,7 @@ import {Component, OnInit, Input, ChangeDetectorRef, AfterViewInit} from '@angul
 import {I18n} from '../../../model/i18n';
 import {Language} from '../../../model/language';
 import {LanguageService} from '../../language.service';
+import {Translation} from '../../../model/translation';
 
 @Component({
   selector: 'app-translated-input',
@@ -28,5 +29,16 @@ export class TranslatedInputComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.cd.detectChanges();
+  }
+
+  getValue(language: string) {
+    if (this.obj.i18n.hasOwnProperty(name)) {
+      const translations: Translation[] = this.obj.i18n[name];
+      const index = translations.findIndex(translation => translation.langCode === language);
+      if (index !== -1) {
+        return translations[index].value;
+      }
+    }
+    return '';
   }
 }

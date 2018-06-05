@@ -3,8 +3,7 @@
     <div class="banner-left col-lg-6 col-sm-12">
       <div id="carousel" class="carousel slide col-9 pull-right" data-interval="false">
         <div class="carousel-big carousel-inner" tabindex="0">
-          <div class="carousel-item" *ngFor="let image of product.images; let i = index" [attr.data-index]="i"
-               [ngClass]="{active : i==0}">
+          <div class="carousel-item" *ngFor="let image of product.images; let i = index" [attr.data-index]="i" [ngClass]="{active : i===0}">
             <img [src]="image" class="d-flex mx-auto img-fluid" (click)="$event.target.focus()">
           </div>
         </div>

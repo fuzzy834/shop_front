@@ -7,8 +7,7 @@
           </app-translated-input>
         </div>
         <div class="form-group">
-          <app-translated-input [obj]="product" [title]="'Опис продукту'" [name]="'description'"
-                                [textarea]="true">
+          <app-translated-input [obj]="product" [title]="'Опис продукту'" [name]="'description'" [textarea]="true">
           </app-translated-input>
         </div>
         <div class="form-group">
@@ -95,7 +94,14 @@
       </form>
     </div>
     <div class="col-4 pull-right">
-      <app-category-management [categories]="categories"></app-category-management>
+      <app-structure-management>
+        <app-category-management class="tab-pane fade show active" id="categories" role="tabpanel"
+                                 aria-labelledby="categories-tab" [categories]="categories"
+                                 [attributes]="attributes"></app-category-management>
+        <app-attribute-management class="tab-pane fade" id="attributes" role="tabpanel"
+                                  aria-labelledby="attributes-tab" [categories]="categories"
+                                  [attributes]="attributes"></app-attribute-management>
+      </app-structure-management>
     </div>
   </div>
 </div>

@@ -1,38 +1,72 @@
+<ul class="list-group list-group-flush">
+  <li *ngFor="let cat of categoriesSelector.categoriesFlat" class="list-group-item">
+    {{cat.name}}
+    <div class="btn-group pull-right">
+      <button class="btn btn-sm btn-outline-dark" (click)="editCategory(cat)" data-toggle="modal"
+              data-target="#category-modal"><i class="fa fa-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-dark" (click)="deleteCategory(cat)"><i class="fa fa-trash"></i></button>
+    </div>
+  </li>
+</ul>
+<br>
 <div>
-  <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#category-modal">Створити
-    категорію
+  <button type="button" class="btn btn-outline-dark"
+          data-toggle="modal" data-target="#category-modal" (click)="editCategory(null)">
+    Створити категорію
   </button>
 </div>
 
-<div class="modal fade" id="category-modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
 
+<div class="modal fade" id="category-modal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Нова категорія</h5>
-        <button type="button" class="close" data-dismiss="modal">
+        <button type="button" class="close" data-dismiss="modal" data-target="#category-modal">
           <span>&times;</span>
         </button>
       </div>
 
       <div class="modal-body">
         <form action="#" autocomplete="off">
-          <app-translated-input [obj]="category" [title]="'Категорія'" [name]="'category'"
-                                [textarea]="false"></app-translated-input>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Батьківська категорія</span>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Батьківська категорія</span>
+              </div>
+              <app-categories-selector
+                [selectedId]="(category.parent === undefined || category.parent === null) ? '' : category.parent.id"
+                [categories]="categories" (selection)="assignParent($event)"></app-categories-selector>
             </div>
-            <app-categories-selector [categories]="categories"
-                                     (selection)="assignParent($event)"></app-categories-selector>
+          </div>
+          <div class="form-group">
+            <app-translated-input [obj]="category" [title]="'Категорія'" [name]="'category'"
+                                  [textarea]="false"></app-translated-input>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Атрибути</span>
+              </div>
+              <select class="custom-select" #attributeSelect>
+                <option *ngFor="let attribute of attributes" [value]="attribute.id">{{attribute.name}}</option>
+              </select>
+              <div class="input-group-append" (click)="addAttribute(attributeSelect.value)">
+                <span class="input-group-text"><i class="fa fa-plus"></i></span>
+              </div>
+            </div>
+            <div id="selected-attributes">
+              <div class="badge badge-pill badge-dark" *ngFor="let attribute of category.attributes; let i = index"
+                   data-index="i">
+                <span>{{attribute.name}}</span>
+                <span class="times" (click)="deleteAttribute(attribute.id)">&nbsp;&times;</span>
+              </div>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <div class="btn btn-group">
-          <button type="button" class="btn btn-outline-dark">Зберегти</button>
-          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Скасувати</button>
-        </div>
+        <button type="button" class="btn btn-outline-dark">Зберегти</button>
       </div>
     </div>
   </div>

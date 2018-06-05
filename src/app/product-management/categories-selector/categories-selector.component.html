@@ -1,4 +1,4 @@
-<select class="custom-select" (change)="onCategorySelected($event)">
+<select class="custom-select" (change)="onCategorySelected($event)" autocomplete="off">
   <option></option>
-  <option *ngFor="let category of categoriesFlat" [value]="category.id">{{category.name}}</option>
+  <option *ngFor="let category of categoriesFlat" [selected]="selectedId === category.id" [value]="category.id">{{category.name}}</option>
 </select>

@@ -38,6 +38,6 @@ a:hover {
   font-weight: bolder;
 }
 
-.active {
+.unfolded {
   transform: rotate(270deg);
 }

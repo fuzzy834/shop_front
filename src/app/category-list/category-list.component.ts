@@ -23,7 +23,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const roots: NodeListOf<Element> = document.querySelectorAll('.active');
+    const roots: NodeListOf<Element> = document.querySelectorAll('.unfolded');
     Array.from(roots).forEach(root => this.toggleSub(root));
   }
 
@@ -35,6 +35,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
         e['style'].display = (e['style'].display === 'none') ? 'block' : 'none';
       }
     });
-    target.classList.toggle('active');
+    target.classList.toggle('unfolded');
   }
 }

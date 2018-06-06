@@ -3,12 +3,6 @@
   background-color: #e9ecef;
 }
 
-input, textarea, select {
-  outline: none;
-  box-shadow:none !important;
-  border:1px solid #ccc !important;
-}
-
 .textarea-container {
   flex-grow: 1;
 }

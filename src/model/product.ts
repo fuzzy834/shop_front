@@ -1,11 +1,13 @@
 import { ProductAttribute } from './product.attribute';
 import {Category} from './category';
-import {Translation} from './translation';
 import {I18n} from './i18n';
+import {getTranslatedFields, Translated} from './decorators';
 
 export class Product extends I18n {
   id: string;
+  @Translated
   name: string;
+  @Translated
   description: string;
   retailPrice: number;
   bulkPrice: number;
@@ -18,7 +20,7 @@ export class Product extends I18n {
   constructor(id?: string, name?: string, description?: string, retailPrice?: number,
               bulkPrice?: number, discount?: number, currency?: string,
               category?: Category, attributes?: ProductAttribute[], images?: string[]) {
-    super();
+    super(getTranslatedFields(Product));
     this.id = id;
     this.name = name;
     this.description = description;

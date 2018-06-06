@@ -110,7 +110,6 @@ export class ProductManagementComponent implements OnInit{
   }
 
   submitProduct(form: HTMLFormElement) {
-    console.log(form.elements);
     console.log(this.product);
   }
 }

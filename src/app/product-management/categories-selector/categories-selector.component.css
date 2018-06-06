@@ -1,3 +1,8 @@
 :host {
   flex-grow: 1;
 }
+
+select {
+  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+}

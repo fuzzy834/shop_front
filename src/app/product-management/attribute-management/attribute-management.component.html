@@ -30,11 +30,12 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">Пріорітет</span>
               </div>
-              <input type="number" min="0" max="100" [(ngModel)]="attribute.priority" name="priority">
+              <input class="form-control" type="number" min="0" max="100" [(ngModel)]="attribute.priority"
+                     name="priority">
             </div>
           </div>
           <div class="form-group">
-            <app-translated-input [obj]="attribute" [title]="'Атрибут'" [name]="'attribute'" [textarea]="false">
+            <app-translated-input [obj]="attribute" [title]="'Атрибут'" [name]="'name'" [textarea]="false">
             </app-translated-input>
           </div>
           <div class="form-group">
@@ -43,16 +44,29 @@
             <ul class="list-group" id="attribute-values">
               <li class="list-group-item" *ngFor="let value of attribute.values">
                 <div class="row">
-                  <div class="col-3">{{value.i18n['value'][langIndex].value}}</div>
                   <div class="input-group col-6">
                     <div class="input-group-prepend">
                       <span class="input-group-text">Категорія</span>
                     </div>
-                    <app-categories-selector [categories]="categories"></app-categories-selector>
+                    <app-categories-selector (selection)="value.category = $event"
+                                             [categories]="categories"></app-categories-selector>
                   </div>
-                  <div class="btn-group col-3">
-                      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-pencil"></i></button>
-                      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-trash"></i></button>
+                  <div class="btn-group col-6">
+                    <button (click)="editValue(value)" class="btn btn-sm btn-outline-dark"><i class="fa fa-pencil"></i>
+                    </button>
+                    <button (click)="deleteValue(value)" class="btn btn-sm btn-outline-dark"><i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-12">
+                    <ul class="list-unstyled">
+                      <li *ngFor="let lang of languages">
+                        <span class="font-weight-bold">{{lang.name}}:&nbsp;</span>
+                        <span class="font-weight-normal">{{value.i18n['value'][lang.code]}}</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </li>

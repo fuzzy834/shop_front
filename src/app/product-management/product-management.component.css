@@ -2,12 +2,6 @@ form {
   margin-top: 3rem;
 }
 
-input, textarea, select {
-  outline: none;
-  box-shadow:none !important;
-  border:1px solid #ccc !important;
-}
-
 .input-group-prepend .input-group-text {
   min-width: 9rem;
 }

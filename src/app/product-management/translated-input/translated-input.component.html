@@ -3,15 +3,15 @@
     <span class="input-group-text">{{title}}</span>
   </div>
   <div *ngIf="textarea; else input" class="textarea-container">
-      <textarea class="form-control" type="text" *ngFor="let language of languages"
-                (input)="obj.addTranslation($event.target.name, $event.target.value, $event.target.lang)"
-                [hidden]="language.code !== langSelect.value" [value]="getValue(language.code)"
+      <textarea class="form-control rounded-0" style="resize: none" type="text" *ngFor="let language of languages"
+                [hidden]="language.code !== langSelect.value"
+                [(ngModel)]="obj.i18n[name][language.code]"
                 [name]="name" [lang]="language.code" [id]="name + '-' + language.code"></textarea>
   </div>
   <ng-template #input>
-    <input class="form-control" type="text" *ngFor="let language of languages"
-           (input)="obj.addTranslation($event.target.name, $event.target.value, $event.target.lang)"
-           [hidden]="language.code !== langSelect.value" [value]="getValue(language.code)"
+    <input class="form-control rounded-0" type="text" *ngFor="let language of languages"
+           [hidden]="language.code !== langSelect.value"
+           [(ngModel)]="obj.i18n[name][language.code]"
            [name]="name" [lang]="language.code" [id]="name + '-' + language.code">
   </ng-template>
   <div class="input-group-append">

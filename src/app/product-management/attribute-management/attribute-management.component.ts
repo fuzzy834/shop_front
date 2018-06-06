@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import {Attribute} from '../../../model/attribute';
-import {Value} from '../../../model/value';
-import {LanguageService} from '../../language.service';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Attribute } from '../../../model/attribute';
+import { Value } from '../../../model/value';
+import { LanguageService } from '../../language.service';
+import { Category } from '../../../model/category';
+import { AttributeValueComponent } from './attribute-value/attribute-value.component';
 import {Language} from '../../../model/language';
-import {Category} from '../../../model/category';
 
 @Component({
   selector: 'app-attribute-management',
@@ -12,15 +13,16 @@ import {Category} from '../../../model/category';
 })
 export class AttributeManagementComponent implements OnInit {
 
-  langIndex: number;
+  languages: Language[];
   attribute: Attribute = new Attribute();
 
   @Input() attributes: Attribute[];
   @Input() categories: Category[];
+  @ViewChild(AttributeValueComponent) attrVal: AttributeValueComponent;
 
   constructor(private languageService: LanguageService) {
-    const languages: Language[] = languageService.languages;
-    this.languageService.lang.subscribe(lang => this.langIndex = languages.findIndex(l => l.code === lang.code));
+    this.languages = languageService.languages;
+    // this.languageService.lang.subscribe(lang => this.lang = lang.code);
     this.attribute.values = [];
   }
 
@@ -31,4 +33,12 @@ export class AttributeManagementComponent implements OnInit {
     this.attribute.values.push(value);
   }
 
+  deleteValue(value: Value) {
+    const index = this.attribute.values.findIndex(val => val === value);
+    this.attribute.values.splice(index, 1);
+  }
+
+  editValue(value: Value) {
+    this.attrVal.editValue(value);
+  }
 }

@@ -1,8 +1,7 @@
-import {Component, Input, OnInit, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {Category} from '../../model/category';
-import {Attribute} from '../../model/attribute';
-import {Value} from '../../model/value';
 import {SidebarToggleService} from '../sidebar-toggle.service';
+import {CategoryService} from '../category.service';
 
 @Component({
   selector: 'app-category-list',
@@ -13,12 +12,13 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
 
   visible: boolean;
 
-  @Input() categories: Category[];
+  categories: Category[];
 
-  constructor(private toggle: SidebarToggleService) {
+  constructor(private toggle: SidebarToggleService, private categoryService: CategoryService) {
   }
 
   ngOnInit() {
+    this.categories = this.categoryService.categories;
     this.toggle.observable.subscribe(visible => this.visible = visible);
   }
 

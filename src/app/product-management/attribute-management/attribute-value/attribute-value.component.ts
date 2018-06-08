@@ -1,17 +1,10 @@
 import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  ViewChild,
-  ComponentRef,
-  ViewContainerRef,
-  ComponentFactoryResolver,
-  Input
+  Component, ComponentFactoryResolver, ComponentRef, EventEmitter, Input, OnInit, Output, ViewChild,
+  ViewContainerRef
 } from '@angular/core';
-import { Value } from '../../../../model/value';
-import { TranslatedInputComponent } from '../../translated-input/translated-input.component';
-import { Attribute } from '../../../../model/attribute';
+import {Value} from '../../../../model/value';
+import {TranslatedInputComponent} from '../../translated-input/translated-input.component';
+import {Attribute} from '../../../../model/attribute';
 
 @Component({
   selector: 'app-attribute-value',
@@ -22,8 +15,11 @@ import { Attribute } from '../../../../model/attribute';
 export class AttributeValueComponent implements OnInit {
 
   valueRef: ComponentRef<TranslatedInputComponent>;
+
   @Output() valueEmitter = new EventEmitter<Value>();
+
   @Input() attribute: Attribute;
+
   @ViewChild('valueContainer', {read: ViewContainerRef}) input: ViewContainerRef;
 
   constructor(private resolver: ComponentFactoryResolver) {
@@ -56,6 +52,15 @@ export class AttributeValueComponent implements OnInit {
     newValue.instance.title = 'Значення';
     newValue.instance.textarea = false;
     this.valueRef = newValue;
-    console.log(newValue.instance.obj);
+  }
+
+  confirmEdit() {
+    this.valueRef.instance.obj = new Value();
+  }
+
+  discardEdit(editedValue) {
+    console.log(editedValue);
+    this.valueRef.instance.obj.i18n['value'] = editedValue;
+    this.valueRef.instance.obj = new Value();
   }
 }

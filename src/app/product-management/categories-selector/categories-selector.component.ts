@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Category} from '../../../model/category';
+import {CategoryService} from '../../category.service';
 
 @Component({
   selector: 'app-categories-selector',
@@ -8,16 +9,17 @@ import {Category} from '../../../model/category';
 })
 export class CategoriesSelectorComponent implements OnInit {
 
+  categories: Category[];
   categoriesFlat: Category[] = [];
 
-  @Input() categories: Category[];
   @Input() selectedId: string;
   @Output() selection = new EventEmitter<Category>();
 
-  constructor() {
+  constructor(private categoryService: CategoryService) {
   }
 
   ngOnInit() {
+    this.categories = this.categoryService.categories;
     this.flatCategories(this.categories);
   }
 
@@ -32,7 +34,7 @@ export class CategoriesSelectorComponent implements OnInit {
 
   onCategorySelected(event) {
     const id: string = event.target.value;
-    const category: Category = this.categories.find(c => c.id === id);
+    const category: Category = this.categoriesFlat.find(c => c.id === id);
     this.selection.emit(category);
   }
 }

@@ -21,18 +21,18 @@
     </div>
     <div class="product-info col-lg-6 col-sm-12">
       <div class="story-content">
-        <h4 class="badge badge-dark">{{product.category.name}}</h4>&nbsp;
-        <h4 *ngIf="product.discount > 0" class="badge badge-danger">-{{product.discount}}%</h4>
+        <h4 class="badge badge-pill badge-secondary">{{product.category.name}}</h4>&nbsp;
+        <h4 *ngIf="product.discount > 0" class="badge badge-pill badge-dark">-{{product.discount}}%</h4>
         <h3>{{product.name}}</h3>
         <p>{{product.description}}</p>
         <p>Роздрібна ціна: <s *ngIf="product.discount > 0">{{product.retailPrice}} {{product.currency}}</s>
           {{getPriceWithDiscount(product.retailPrice)}}<span>{{product.currency}}</span></p>
         <p>Оптова ціна: <s *ngIf="product.discount > 0">{{product.bulkPrice}} {{product.currency}}</s>
           {{getPriceWithDiscount(product.bulkPrice)}}<span>{{product.currency}}</span></p>
-        <button type="button" class="btn btn-success"><i class="fa fa-shopping-bag"></i>&nbsp;&nbsp;Додати в кошик
+        <button type="button" class="btn btn-outline-dark"><i class="fa fa-shopping-bag"></i>&nbsp;&nbsp;Додати в кошик
         </button>
         <br>
-        <button class="btn btn-info" data-toggle="collapse" data-target="#features" (click)="changeText($event)">
+        <button class="btn btn-outline-dark" data-toggle="collapse" data-target="#features" (click)="changeText($event)">
           <i class="fa fa-info-circle"></i>&nbsp;&nbsp;Показати деталі
         </button>
         <ul class="collapse list-group card card-body" id="features">

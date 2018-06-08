@@ -36,7 +36,7 @@
               </div>
               <app-categories-selector
                 [selectedId]="(category.parent === undefined || category.parent === null) ? '' : category.parent.id"
-                [categories]="categories" (selection)="assignParent($event)"></app-categories-selector>
+                (selection)="assignParent($event)"></app-categories-selector>
             </div>
           </div>
           <div class="form-group">

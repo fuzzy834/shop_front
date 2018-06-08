@@ -45,7 +45,7 @@ export class AttributeSelectorComponent implements OnInit {
   onAttributeValueSelected(id: string, valueId: string) {
     const attribute: Attribute = this.attributes.find(a => a.id === id);
     const value: Value = attribute.values.find(v => v.id === valueId);
-    const productAttribute = new ProductAttribute(id, attribute.priority, attribute.name, value.value);
+    const productAttribute = new ProductAttribute(id, attribute.priority, attribute.name, value.id);
     this.attributeRef.emit(productAttribute);
   }
 

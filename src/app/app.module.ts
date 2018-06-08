@@ -18,6 +18,15 @@ import { TranslatedInputComponent } from './product-management/translated-input/
 import { StructureManagementComponent } from './product-management/structure-management/structure-management.component';
 import { AttributeManagementComponent } from './product-management/attribute-management/attribute-management.component';
 import { AttributeValueComponent } from './product-management/attribute-management/attribute-value/attribute-value.component';
+import { LanguageManagementComponent } from './product-management/language-management/language-management.component';
+import { CurrencyManagementComponent } from './product-management/currency-management/currency-management.component';
+import {Routes, RouterModule} from '@angular/router';
+
+const routes: Routes = [
+    {path: 'catalog', component: CatalogComponent},
+    {path: 'product/:id', component: ProductComponent},
+    {path: 'admin', component: ProductManagementComponent}
+  ];
 
 @NgModule({
   declarations: [
@@ -36,11 +45,14 @@ import { AttributeValueComponent } from './product-management/attribute-manageme
     TranslatedInputComponent,
     StructureManagementComponent,
     AttributeManagementComponent,
-    AttributeValueComponent
+    AttributeValueComponent,
+    LanguageManagementComponent,
+    CurrencyManagementComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]

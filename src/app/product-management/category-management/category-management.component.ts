@@ -4,6 +4,8 @@ import {LanguageService} from '../../language.service';
 import {Language} from '../../../model/language';
 import {Attribute} from '../../../model/attribute';
 import {CategoriesSelectorComponent} from '../categories-selector/categories-selector.component';
+import {AttributeService} from '../../attribute.service';
+import {CategoryService} from '../../category.service';
 
 @Component({
   selector: 'app-category-management',
@@ -14,20 +16,26 @@ export class CategoryManagementComponent implements OnInit {
 
   category: Category = new Category();
 
-  @Input() categories: Category[];
-  @Input() attributes: Attribute[];
+  categories: Category[];
+  attributes: Attribute[];
+
   @ViewChild(CategoriesSelectorComponent) categoriesSelector: CategoriesSelectorComponent;
 
   languages: Language[];
   lang: Language;
 
-  constructor(private cd: ChangeDetectorRef, private languageService: LanguageService) {
-    this.category.attributes = [];
-    this.languages = languageService.languages;
-    languageService.lang.subscribe(lang => this.lang = lang);
+  constructor(private cd: ChangeDetectorRef,
+              private languageService: LanguageService,
+              private attributeService: AttributeService,
+              private categoryService: CategoryService) {
   }
 
   ngOnInit() {
+    this.category.attributes = [];
+    this.languages = this.languageService.languages;
+    this.languageService.lang.subscribe(lang => this.lang = lang);
+    this.attributes = this.attributeService.attributes;
+    this.categories = this.categoryService.categories;
   }
 
   assignParent(parent: Category) {

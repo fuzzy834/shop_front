@@ -2,15 +2,15 @@
   <li *ngFor="let attr of attributes" class="list-group-item">
     {{attr.name}}
     <div class="btn-group pull-right">
-      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-pencil"></i></button>
-      <button class="btn btn-sm btn-outline-dark"><i class="fa fa-trash"></i></button>
+      <button (click)="editAttribute(attr)" class="btn btn-sm btn-outline-dark"><i class="fa fa-pencil"></i></button>
+      <button (click)="deleteAttribute(attr)" class="btn btn-sm btn-outline-dark"><i class="fa fa-trash"></i></button>
     </div>
   </li>
 </ul>
 <br>
 <div>
-  <button type="button" data-toggle="modal" data-target="#attribute-modal" class="btn btn-outline-dark">Створити
-    атрибут
+  <button (click)="createNewAttribute()" type="button" data-toggle="modal" data-target="#attribute-modal" class="btn btn-outline-dark" #modalTrigger>
+    Створити атрибут
   </button>
 </div>
 
@@ -48,11 +48,11 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Категорія</span>
                     </div>
-                    <app-categories-selector (selection)="value.category = $event"
-                                             [categories]="categories"></app-categories-selector>
+                    <app-categories-selector (selection)="assignCategory(value, $event)"></app-categories-selector>
                   </div>
                   <div class="btn-group col-6">
-                    <button (click)="editValue(value)" class="btn btn-sm btn-outline-dark"><i class="fa fa-pencil"></i>
+                    <button (click)="editValue(value, editControls);" class="btn btn-sm btn-outline-dark"><i
+                      class="fa fa-pencil"></i>
                     </button>
                     <button (click)="deleteValue(value)" class="btn btn-sm btn-outline-dark"><i class="fa fa-trash"></i>
                     </button>
@@ -60,13 +60,21 @@
                 </div>
                 <br>
                 <div class="row">
-                  <div class="col-12">
+                  <div class="col-10">
                     <ul class="list-unstyled">
                       <li *ngFor="let lang of languages">
                         <span class="font-weight-bold">{{lang.name}}:&nbsp;</span>
                         <span class="font-weight-normal">{{value.i18n['value'][lang.code]}}</span>
                       </li>
                     </ul>
+                  </div>
+                  <div class="col-2">
+                    <div class="btn-group pull-right" hidden #editControls>
+                      <button (click)="confirmEdit(editControls)" class="btn btn-sm btn-outline-dark"><i
+                        class="fa fa-check"></i></button>
+                      <button (click)="discardEdit(editControls)" class="btn btn-sm btn-outline-dark"><i
+                        class="fa fa-times"></i></button>
+                    </div>
                   </div>
                 </div>
               </li>
@@ -75,7 +83,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark">Зберегти</button>
+        <button (click)="saveAttribute()" type="button" class="btn btn-outline-dark">Зберегти</button>
       </div>
     </div>
   </div>

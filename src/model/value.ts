@@ -6,12 +6,12 @@ export class Value extends I18n {
   id: string;
   @Translated
   value: string;
-  category: Category;
+  categoryId: string;
 
-  constructor(id?: string, value?: string, category?: Category) {
+  constructor(id?: string, value?: string, categoryId?: string) {
     super(getTranslatedFields(Value));
     this.id = id;
     this.value = value;
-    this.category = category;
+    this.categoryId = categoryId;
   }
 }

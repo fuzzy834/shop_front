@@ -11,6 +11,9 @@ import {AttributeSelectorComponent} from './attribute-selector/attribute-selecto
 import {ProductAttribute} from '../../model/product.attribute';
 import {LanguageService} from '../language.service';
 import {Language} from '../../model/language';
+import {RouterModule} from '@angular/router';
+import {AttributeService} from '../attribute.service';
+import {CategoryService} from '../category.service';
 
 @Component({
   selector: 'app-product-management',
@@ -18,7 +21,7 @@ import {Language} from '../../model/language';
   styleUrls: ['./product-management.component.css'],
   entryComponents: [AttributeSelectorComponent]
 })
-export class ProductManagementComponent implements OnInit{
+export class ProductManagementComponent implements OnInit {
 
   languages: Language[];
   lang: Language;
@@ -26,15 +29,21 @@ export class ProductManagementComponent implements OnInit{
   attributeCount = 0;
   attributeRefs: any[] = [];
 
-  @Input() categories: Category[];
-  @Input() attributes: Attribute[];
+  categories: Category[];
+  attributes: Attribute[];
 
   @ViewChild('attributeContainer', {read: ViewContainerRef}) attribute: ViewContainerRef;
 
   product: Product = new Product();
   imagesToUpload: UploadImage[] = [];
 
-  constructor(private sanitization: DomSanitizer, private resolver: ComponentFactoryResolver, private languageService: LanguageService) {
+  constructor(private sanitization: DomSanitizer,
+              private resolver: ComponentFactoryResolver,
+              private languageService: LanguageService,
+              private attributeService: AttributeService,
+              private categoryService: CategoryService) {
+    this.categories = categoryService.categories;
+    this.attributes = attributeService.attributes;
     this.languages = languageService.languages;
     languageService.lang.subscribe(lang => this.lang = lang);
   }
@@ -109,7 +118,25 @@ export class ProductManagementComponent implements OnInit{
     this.product.category = category;
   }
 
-  submitProduct(form: HTMLFormElement) {
-    console.log(this.product);
+  getSimpleProduct() {
+    const data = {};
+    for (const prop in this.product.i18n) {
+      if (this.product.i18n.hasOwnProperty(prop)) {
+        data[prop] = this.product.i18n[prop];
+      }
+    }
+    data['discount'] = this.product.discount;
+    data['bulkPrice'] = this.product.bulkPrice;
+    data['retailPrice'] = this.product.retailPrice;
+    data['category'] = this.product.category.id;
+    const attributes = data['attributes'] = [];
+    for (const attribute of this.product.attributes) {
+      attributes[attribute.id] = attribute.value;
+    }
+    return data;
+  }
+
+  submitProduct() {
+    console.log(this.getSimpleProduct());
   }
 }

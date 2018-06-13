@@ -1,15 +1,18 @@
 <li class="list-group-item border-0" style="padding-top: 0">
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <span class="input-group-text" (click)="onDeleteAttribute(attributeName.value)"><i class="fa fa-trash"></i></span>
-    </div>
+  <div class="form-group">
     <select (change)="getAttrValues($event.target.value, attributeValue)"
             name="attributeRefName" id="product-attribute" class="custom-select" #attributeName>
       <option></option>
-      <option *ngFor="let attribute of attributes" [value]="attribute.id">{{attribute.name}}</option>
+      <ng-template ngFor let-attribute [ngForOf]="attributes">
+        <option *ngIf="!isPresent(attribute)" [value]="attribute.id">
+          {{attribute.name}}
+        </option>
+      </ng-template>
     </select>
-
-    <select (change)="onAttributeValueSelected(attributeName.value, $event.target.value)" name="attributeRefValue"
+  </div>
+  <div class="form-group" [hidden]="hideValues">
+    <select (change)="onAttributeValueSelected(attributeName.value, $event.target.value)"
+            name="attributeRefValue"
             id="product-attribute-value" class="custom-select" #attributeValue>
     </select>
   </div>

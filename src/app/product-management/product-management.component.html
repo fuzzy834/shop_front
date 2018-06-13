@@ -58,13 +58,52 @@
             <div class="input-group-prepend">
               <span class="input-group-text">Категорія</span>
             </div>
-            <app-categories-selector (selection)="assignCategory($event)"></app-categories-selector>
+            <app-categories-selector [selectedId]="onCategoryPresent()" (selection)="assignCategory($event)"></app-categories-selector>
           </div>
         </div>
         <div class="form-group">
-          <button type="button" class="btn btn-outline-dark" (click)="addAttribute(attributes)">Додати атрибут</button>
+          <button type="button"
+                  data-toggle="modal"
+                  data-target="#product-attribute-modal"
+                  class="btn btn-outline-dark"
+                  (click)="addAttribute(attributes)">
+            Додати атрибут
+          </button>
         </div>
-        <template #attributeContainer></template>
+        <div class="modal fade" id="product-attribute-modal" tabindex="-1">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Додати атрибут</h5>
+                <button type="button" class="close" data-dismiss="modal" data-target="#product-attribute-modal">
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <template #attributeContainer></template>
+              </div>
+              <div class="modal-footer">
+                <div class="modal-footer">
+                  <button [disabled]="!productAttributeSelected" (click)="addProductAttribute()" type="button"
+                          data-dismiss="modal" data-target="#product-attribute-modal"
+                          class="btn btn-outline-dark">Додати</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul *ngIf="product.attributes.length > 0"
+            class="list-group list-group-flush">
+          <li *ngFor="let attribute of product.attributes" class="list-group-item">
+            {{attribute.name}}&nbsp;{{attribute.value}}
+            <div class="btn-group pull-right">
+              <button (click)="deleteAttribute(attribute.id)" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </li>
+        </ul>
+        <br *ngIf="product.attributes.length > 0">
         <div class="form-group">
           <input title="" hidden id="product-image" type="file" (change)="setFiles($event)" accept=".jpg, .jpeg, .png"
                  multiple #fileInput>

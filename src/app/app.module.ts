@@ -25,7 +25,8 @@ import {Routes, RouterModule} from '@angular/router';
 const routes: Routes = [
     {path: 'catalog', component: CatalogComponent},
     {path: 'product/:id', component: ProductComponent},
-    {path: 'admin', component: ProductManagementComponent}
+    {path: 'admin', component: ProductManagementComponent},
+    {path: 'admin/:id', component: ProductManagementComponent}
   ];
 
 @NgModule({

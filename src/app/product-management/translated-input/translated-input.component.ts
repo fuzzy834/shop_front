@@ -1,14 +1,15 @@
-import {Component, OnInit, Input, ChangeDetectorRef, AfterViewInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {I18n} from '../../../model/i18n';
 import {Language} from '../../../model/language';
 import {LanguageService} from '../../language.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-translated-input',
   templateUrl: './translated-input.component.html',
   styleUrls: ['./translated-input.component.css']
 })
-export class TranslatedInputComponent implements OnInit, AfterViewInit {
+export class TranslatedInputComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() obj: I18n;
   @Input() name: string;
@@ -18,9 +19,12 @@ export class TranslatedInputComponent implements OnInit, AfterViewInit {
   lang: Language;
   languages: Language[];
 
+  subscriptions: Subscription[] = [];
+
   constructor(private cd: ChangeDetectorRef, private languageService: LanguageService) {
     this.languages = languageService.languages;
-    languageService.lang.subscribe(lang => this.lang = lang);
+    const langSubscription = languageService.lang.subscribe(lang => this.lang = lang);
+    this.subscriptions.push(langSubscription);
   }
 
   ngOnInit() {
@@ -28,5 +32,9 @@ export class TranslatedInputComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.cd.detectChanges();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

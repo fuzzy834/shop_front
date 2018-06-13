@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Category} from '../../../model/category';
 import {LanguageService} from '../../language.service';
 import {Language} from '../../../model/language';
@@ -6,13 +6,14 @@ import {Attribute} from '../../../model/attribute';
 import {CategoriesSelectorComponent} from '../categories-selector/categories-selector.component';
 import {AttributeService} from '../../attribute.service';
 import {CategoryService} from '../../category.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-category-management',
   templateUrl: './category-management.component.html',
   styleUrls: ['./category-management.component.css']
 })
-export class CategoryManagementComponent implements OnInit {
+export class CategoryManagementComponent implements OnInit, OnDestroy {
 
   category: Category = new Category();
 
@@ -24,6 +25,8 @@ export class CategoryManagementComponent implements OnInit {
   languages: Language[];
   lang: Language;
 
+  subscriptions: Subscription[] = [];
+
   constructor(private cd: ChangeDetectorRef,
               private languageService: LanguageService,
               private attributeService: AttributeService,
@@ -33,9 +36,10 @@ export class CategoryManagementComponent implements OnInit {
   ngOnInit() {
     this.category.attributes = [];
     this.languages = this.languageService.languages;
-    this.languageService.lang.subscribe(lang => this.lang = lang);
+    const langSubscription = this.languageService.lang.subscribe(lang => this.lang = lang);
     this.attributes = this.attributeService.attributes;
     this.categories = this.categoryService.categories;
+    this.subscriptions.push(langSubscription);
   }
 
   assignParent(parent: Category) {
@@ -66,5 +70,9 @@ export class CategoryManagementComponent implements OnInit {
 
   deleteCategory(category: Category) {
     console.log(category.id);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

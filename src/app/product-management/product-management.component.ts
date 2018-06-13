@@ -1,5 +1,5 @@
 import {
-  AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, Input, OnInit, ViewChild,
+  ChangeDetectorRef, Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
@@ -8,12 +8,13 @@ import {Product} from '../../model/product';
 import {Category} from '../../model/category';
 import {Attribute} from '../../model/attribute';
 import {AttributeSelectorComponent} from './attribute-selector/attribute-selector.component';
-import {ProductAttribute} from '../../model/product.attribute';
 import {LanguageService} from '../language.service';
 import {Language} from '../../model/language';
-import {RouterModule} from '@angular/router';
+import {ActivatedRoute, Params, RouterModule} from '@angular/router';
 import {AttributeService} from '../attribute.service';
 import {CategoryService} from '../category.service';
+import {ProductService} from '../product.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-product-management',
@@ -21,34 +22,47 @@ import {CategoryService} from '../category.service';
   styleUrls: ['./product-management.component.css'],
   entryComponents: [AttributeSelectorComponent]
 })
-export class ProductManagementComponent implements OnInit {
+export class ProductManagementComponent implements OnInit, OnDestroy {
 
   languages: Language[];
   lang: Language;
-
-  attributeCount = 0;
-  attributeRefs: any[] = [];
-
+  attributeRef: ComponentRef<AttributeSelectorComponent>;
   categories: Category[];
   attributes: Attribute[];
+  productAttributeSelected = false;
 
   @ViewChild('attributeContainer', {read: ViewContainerRef}) attribute: ViewContainerRef;
 
   product: Product = new Product();
   imagesToUpload: UploadImage[] = [];
 
+  subscriptions: Subscription[] = [];
+
   constructor(private sanitization: DomSanitizer,
               private resolver: ComponentFactoryResolver,
               private languageService: LanguageService,
               private attributeService: AttributeService,
-              private categoryService: CategoryService) {
-    this.categories = categoryService.categories;
-    this.attributes = attributeService.attributes;
-    this.languages = languageService.languages;
-    languageService.lang.subscribe(lang => this.lang = lang);
+              private categoryService: CategoryService,
+              private productService: ProductService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.categories = this.categoryService.categories;
+    this.attributes = this.attributeService.attributes;
+    this.languages = this.languageService.languages;
+    const langSubscription = this.languageService.lang.subscribe(lang => this.lang = lang);
+    const routeSubscription = this.route.params.subscribe((params: Params) => {
+      if (params.hasOwnProperty('id')) {
+        this.product = this.productService.getProductById(params['id']);
+      }
+    });
+    this.subscriptions.push(langSubscription, routeSubscription);
+    console.log(this.product.attributes.length);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   setFiles(event) {
@@ -69,36 +83,30 @@ export class ProductManagementComponent implements OnInit {
   }
 
   addAttribute(attributes: Attribute[]) {
+    this.attribute.clear();
     const factory = this.resolver.resolveComponentFactory(AttributeSelectorComponent);
     const newAttribute = this.attribute.createComponent(factory);
     newAttribute.instance.attributes = attributes;
     newAttribute.instance.parent = this;
-    newAttribute.instance.id = this.attributeCount;
-    newAttribute.instance.attributeToDelete.subscribe(pointer => this.deleteAttribute(pointer.id, pointer.index));
-    newAttribute.instance.attributeRef.subscribe(pa => this.addProductAttribute(pa));
-    this.attributeRefs.push(newAttribute);
-    this.attributeCount++;
+    const newAttributeSubscription = newAttribute.instance.attributeRef
+      .subscribe(selected => this.productAttributeSelected = selected);
+    newAttribute.onDestroy(() => {
+      newAttributeSubscription.unsubscribe();
+    });
+    this.attributeRef = newAttribute;
+    return newAttribute;
   }
 
-  addProductAttribute(productAttribute: ProductAttribute) {
-    if (this.product.attributes === undefined) {
-      this.product.attributes = [];
-    }
-    const index = this.product.attributes.findIndex(pa => pa.id === productAttribute.id);
-    if (index !== -1) {
-      this.product.attributes.splice(index, 1);
-    }
-    this.product.attributes.push(productAttribute);
+  addProductAttribute() {
+    this.attribute.clear();
+    this.product.attributes.push(this.attributeRef.instance.productAttribute);
+    console.log(this.product.attributes);
   }
 
-  deleteAttribute(id: string, index: number) {
-    this.attributeRefs[index].destroy();
-    this.attributeRefs.splice(index, 1);
-    if (this.product.attributes !== undefined) {
-      const indexPa = this.product.attributes.findIndex(pa => pa.id === id);
-      if (indexPa !== -1) {
-        this.product.attributes.splice(indexPa, 1);
-      }
+  deleteAttribute(id: string) {
+    const indexPa = this.product.attributes.findIndex(pa => pa.id === id);
+    if (indexPa !== -1) {
+      this.product.attributes.splice(indexPa, 1);
     }
   }
 
@@ -118,6 +126,12 @@ export class ProductManagementComponent implements OnInit {
     this.product.category = category;
   }
 
+  onCategoryPresent() {
+    if (this.product.category !== undefined) {
+      return this.product.category.id;
+    }
+  }
+
   getSimpleProduct() {
     const data = {};
     for (const prop in this.product.i18n) {
@@ -131,12 +145,12 @@ export class ProductManagementComponent implements OnInit {
     data['category'] = this.product.category.id;
     const attributes = data['attributes'] = [];
     for (const attribute of this.product.attributes) {
-      attributes[attribute.id] = attribute.value;
+      attributes[attribute.id] = attribute.valueId;
     }
     return data;
   }
 
   submitProduct() {
-    console.log(this.getSimpleProduct());
+    console.log(this.product.attributes);
   }
 }

@@ -19,7 +19,7 @@ export class Product extends I18n {
 
   constructor(id?: string, name?: string, description?: string, retailPrice?: number,
               bulkPrice?: number, discount?: number, currency?: string,
-              category?: Category, attributes?: ProductAttribute[], images?: string[]) {
+              category?: Category, attributes: ProductAttribute[] = [], images?: string[]) {
     super(getTranslatedFields(Product));
     this.id = id;
     this.name = name;

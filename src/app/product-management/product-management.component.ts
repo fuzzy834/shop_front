@@ -52,7 +52,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.attributes = this.attributeService.attributes;
     this.languages = this.languageService.languages;
     const langSubscription = this.languageService.lang.subscribe(lang => this.lang = lang);
-    const routeSubscription = this.route.params.subscribe((params: Params) => {
+    const routeSubscription = this.route.queryParams.subscribe((params: Params) => {
       if (params.hasOwnProperty('id')) {
         this.product = this.productService.getProductById(params['id']);
       }
@@ -151,6 +151,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   submitProduct() {
-    console.log(this.product.attributes);
+    console.log(this.product);
   }
 }

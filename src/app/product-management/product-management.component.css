@@ -1,5 +1,9 @@
+.pull-right {
+  border-left: 1px solid lightgray;
+}
+
 form {
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 .input-group-prepend .input-group-text {

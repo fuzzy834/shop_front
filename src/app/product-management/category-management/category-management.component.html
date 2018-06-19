@@ -2,27 +2,27 @@
   <li *ngFor="let cat of categoriesSelector.categoriesFlat" class="list-group-item">
     {{cat.name}}
     <div class="btn-group pull-right">
-      <button class="btn btn-sm btn-outline-dark" (click)="editCategory(cat)" data-toggle="modal"
-              data-target="#category-modal"><i class="fa fa-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-dark" (click)="editCategory(cat)" [appModal]="categoryModal">
+        <i class="fa fa-pencil"></i>
+      </button>
       <button class="btn btn-sm btn-outline-dark" (click)="deleteCategory(cat)"><i class="fa fa-trash"></i></button>
     </div>
   </li>
 </ul>
 <br>
 <div>
-  <button type="button" class="btn btn-outline-dark"
-          data-toggle="modal" data-target="#category-modal" (click)="editCategory(null)">
+  <button type="button" class="btn btn-outline-dark" [appModal]="categoryModal" (click)="editCategory(null)">
     Створити категорію
   </button>
 </div>
 
 
-<div class="modal fade" id="category-modal" tabindex="-1">
+<div class="modal fade" id="category-modal" tabindex="-1" #categoryModal>
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Нова категорія</h5>
-        <button type="button" class="close" data-dismiss="modal" data-target="#category-modal">
+        <button type="button" class="close" [appModal]="categoryModal">
           <span>&times;</span>
         </button>
       </div>

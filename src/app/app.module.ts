@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -8,7 +7,6 @@ import { ProductComponent } from './product/product.component';
 import { CatalogComponent } from './catalog/catalog.component';
 import { CategoryListComponent } from './category-list/category-list.component';
 import { PageContentComponent } from './page-content/page-content.component';
-import { ProductManagementComponent } from './product-management/product-management.component';
 import { FormsModule } from '@angular/forms';
 import { AttributeSelectorComponent } from './product-management/attribute-selector/attribute-selector.component';
 import { CategoriesSelectorComponent } from './product-management/categories-selector/categories-selector.component';
@@ -21,12 +19,19 @@ import { AttributeValueComponent } from './product-management/attribute-manageme
 import { LanguageManagementComponent } from './product-management/language-management/language-management.component';
 import { CurrencyManagementComponent } from './product-management/currency-management/currency-management.component';
 import {Routes, RouterModule} from '@angular/router';
+import { ModalDirective } from './modal.directive';
+import {ProductManagementComponent} from './product-management/product-management.component';
 
 const routes: Routes = [
     {path: 'catalog', component: CatalogComponent},
     {path: 'product/:id', component: ProductComponent},
-    {path: 'admin', component: ProductManagementComponent},
-    {path: 'admin/:id', component: ProductManagementComponent}
+    {path: 'admin', component: StructureManagementComponent, children: [
+        {path: '', component: ProductManagementComponent},
+        {path: 'categories', component: CategoryManagementComponent},
+        {path: 'attributes', component: AttributeManagementComponent},
+        {path: 'languages', component: LanguageManagementComponent},
+        {path: 'currencies', component: CurrencyManagementComponent}
+    ]},
   ];
 
 @NgModule({
@@ -48,7 +53,8 @@ const routes: Routes = [
     AttributeManagementComponent,
     AttributeValueComponent,
     LanguageManagementComponent,
-    CurrencyManagementComponent
+    CurrencyManagementComponent,
+    ModalDirective
   ],
   imports: [
     BrowserModule,

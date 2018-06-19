@@ -9,17 +9,17 @@
 </ul>
 <br>
 <div>
-  <button (click)="createNewAttribute()" type="button" data-toggle="modal" data-target="#attribute-modal" class="btn btn-outline-dark" #modalTrigger>
+  <button (click)="createNewAttribute()" type="button" [appModal]="attributeModal" class="btn btn-outline-dark" #modalTrigger>
     Створити атрибут
   </button>
 </div>
 
-<div class="modal fade" id="attribute-modal" tabindex="-1">
+<div class="modal fade" id="attribute-modal" tabindex="-1" #attributeModal>
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Новий атрибут</h5>
-        <button type="button" class="close" data-dismiss="modal" data-target="#attribute-modal">
+        <button type="button" class="close" [appModal]="attributeModal">
           <span>&times;</span>
         </button>
       </div>

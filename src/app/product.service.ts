@@ -11,11 +11,11 @@ export class ProductService {
   products: Product[] = [];
 
   constructor(private categoryService: CategoryService) {
-    const attr1: ProductAttribute = new ProductAttribute('1', 1, 'attribute1', 'value1', '1');
-    const attr2: ProductAttribute = new ProductAttribute('2', 2, 'attribute2', 'value2', '2');
-    const attr3: ProductAttribute = new ProductAttribute('3', 3, 'attribute3', 'value3', '3');
-    const attr4: ProductAttribute = new ProductAttribute('4', 4, 'attribute4', 'value4', '4');
-    const attr5: ProductAttribute = new ProductAttribute('5', 5, 'attribute5', 'value5', '5');
+    const attr1: ProductAttribute = new ProductAttribute('1', 1, 'attribute1', [{id: '1', name: 'value1'}]);
+    const attr2: ProductAttribute = new ProductAttribute('2', 2, 'attribute2', [{id: '2', name: 'value2'}]);
+    const attr3: ProductAttribute = new ProductAttribute('3', 3, 'attribute3', [{id: '3', name: 'value3'}]);
+    const attr4: ProductAttribute = new ProductAttribute('4', 4, 'attribute4', [{id: '4', name: 'value4'}]);
+    const attr5: ProductAttribute = new ProductAttribute('5', 5, 'attribute5', [{id: '5', name: 'value5'}]);
 
     const name = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
 

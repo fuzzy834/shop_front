@@ -93,7 +93,7 @@
   <ul *ngIf="product.attributes.length > 0"
       class="list-group list-group-flush">
     <li *ngFor="let attribute of product.attributes" class="list-group-item">
-      {{attribute.name}}&nbsp;{{attribute.value}}
+      {{attribute.name}}&nbsp;<span *ngFor="let val of attribute.values">{{val.name}}&nbsp;</span>
       <div class="btn-group pull-right">
         <button (click)="deleteAttribute(attribute.id)" class="btn btn-sm btn-outline-dark">
           <i class="fa fa-trash"></i>

@@ -145,7 +145,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     data['category'] = this.product.category.id;
     const attributes = data['attributes'] = [];
     for (const attribute of this.product.attributes) {
-      attributes[attribute.id] = attribute.valueId;
+      attributes[attribute.id] = attribute.values;
     }
     return data;
   }

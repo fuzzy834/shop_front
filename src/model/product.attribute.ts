@@ -1,15 +1,19 @@
+interface SimpleValue {
+  id: string;
+  name: string;
+}
+
 export class ProductAttribute {
   id: string;
   priority: number;
   name: string;
-  value: string;
-  valueId: string;
+  values: SimpleValue[];
 
-  constructor(id?: string, priority?: number, name?: string, value?: string, valueId?: string) {
+
+  constructor(id?: string, priority?: number, name?: string, values?: SimpleValue[]) {
     this.id = id;
     this.priority = priority;
     this.name = name;
-    this.value = value;
-    this.valueId = valueId;
+    this.values = values;
   }
 }

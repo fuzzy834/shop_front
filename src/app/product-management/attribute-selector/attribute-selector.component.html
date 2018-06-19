@@ -11,9 +11,22 @@
     </select>
   </div>
   <div class="form-group" [hidden]="hideValues">
-    <select (change)="onAttributeValueSelected(attributeName.value, $event.target.value)"
-            name="attributeRefValue"
-            id="product-attribute-value" class="custom-select" #attributeValue>
-    </select>
+    <div class="input-group">
+      <select name="attributeRefValue"
+              id="product-attribute-value" class="custom-select" #attributeValue>
+      </select>
+      <div class="input-group-append">
+        <span (click)="onAttributeValueSelected(attributeName.value, attributeValue.value)" class="input-group-text">
+           <i class="fa fa-plus"></i>
+        </span>
+      </div>
+    </div>
+    <div *ngIf="productAttribute.values !== undefined">
+      <div class="badge badge-pill badge-dark"
+            *ngFor="let value of productAttribute.values">
+        <span>{{value.name}}</span>
+        <span class="times" (click)="deleteValue(value.id)">&nbsp;&times;</span>
+      </div>
+    </div>
   </div>
 </li>

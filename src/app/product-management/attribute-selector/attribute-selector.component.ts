@@ -19,9 +19,6 @@ export class AttributeSelectorComponent implements OnInit {
   @Output() attributeRef = new EventEmitter<boolean>();
   @Output() attributeToDelete = new EventEmitter<{ id: string, index: number }>();
 
-  @Input() attributeId: string;
-  @Input() valueId: string;
-
   @ViewChild('attributeName') attribute: ElementRef<HTMLSelectElement>;
   @ViewChild('attributeValue') value: ElementRef<HTMLSelectElement>;
 
@@ -32,11 +29,11 @@ export class AttributeSelectorComponent implements OnInit {
   }
 
   getAttrValues(id: string, value: HTMLSelectElement) {
+    this.productAttribute = new ProductAttribute();
     value.options.length = 0;
     const attr = this.attributes.find(attribute => attribute.id === id);
     if (attr !== undefined) {
       const values = attr.values;
-      this.onAttributeValueSelected(id, values[0].id);
       values.forEach(val => {
         const option = document.createElement('option');
         option.value = val.id;
@@ -57,14 +54,23 @@ export class AttributeSelectorComponent implements OnInit {
       this.productAttribute.id = attribute.id;
       this.productAttribute.name = attribute.name;
       this.productAttribute.priority = attribute.priority;
-      this.productAttribute.value = value.value;
-      this.productAttribute.valueId = value.id;
-      this.attributeRef.emit(true);
+      if (this.productAttribute.values === undefined) {
+        this.productAttribute.values = [];
+      }
+      if (this.productAttribute.values.findIndex(v => v.id === value.id) === -1) {
+        this.productAttribute.values.push({id: value.id, name: value.value});
+        this.attributeRef.emit(true);
+      }
     }
   }
 
   isPresent(attribute: Attribute) {
     const index = this.parent.product.attributes.findIndex(attr => attr.id === attribute.id);
     return index !== -1;
+  }
+
+  deleteValue(id: string) {
+    const index = this.productAttribute.values.findIndex(v => v.id === id);
+    this.productAttribute.values.splice(index, 1);
   }
 }

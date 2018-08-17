@@ -1,6 +1,6 @@
 import {
   ChangeDetectorRef, Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,
-  ViewContainerRef
+  ViewContainerRef, EventEmitter
 } from '@angular/core';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {UploadImage} from '../../model/image';
@@ -15,6 +15,8 @@ import {AttributeService} from '../attribute.service';
 import {CategoryService} from '../category.service';
 import {ProductService} from '../product.service';
 import {Subscription} from 'rxjs';
+import {FormControl, FormGroup, NgForm, Validators, FormArray} from '@angular/forms';
+import {ProductAttribute} from '../../model/product.attribute';
 
 @Component({
   selector: 'app-product-management',
@@ -24,19 +26,21 @@ import {Subscription} from 'rxjs';
 })
 export class ProductManagementComponent implements OnInit, OnDestroy {
 
-  languages: Language[];
-  lang: Language;
-  attributeRef: ComponentRef<AttributeSelectorComponent>;
-  categories: Category[];
-  attributes: Attribute[];
-  productAttributeSelected = false;
-
-  @ViewChild('attributeContainer', {read: ViewContainerRef}) attribute: ViewContainerRef;
-
   product: Product = new Product();
-  imagesToUpload: UploadImage[] = [];
+  productForm = new FormGroup({});
 
   subscriptions: Subscription[] = [];
+  languages: Language[];
+  lang: Language;
+
+  attributeRef: ComponentRef<AttributeSelectorComponent>;
+  assignableCategories: Category[];
+  attributes: Attribute[];
+  imagesToUpload: UploadImage[] = [];
+
+  productAttributeSelected: EventEmitter<ProductAttribute> = new EventEmitter<ProductAttribute>();
+
+  @ViewChild('attributeContainer', {read: ViewContainerRef}) attribute: ViewContainerRef;
 
   constructor(private sanitization: DomSanitizer,
               private resolver: ComponentFactoryResolver,
@@ -48,7 +52,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.categories = this.categoryService.categories;
+    this.assignableCategories = this.categoryService.flatCategories.filter(category => category.children.length === 0);
     this.attributes = this.attributeService.attributes;
     this.languages = this.languageService.languages;
     const langSubscription = this.languageService.lang.subscribe(lang => this.lang = lang);
@@ -58,7 +62,47 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       }
     });
     this.subscriptions.push(langSubscription, routeSubscription);
-    console.log(this.product.attributes.length);
+
+    const discountControl = new FormControl(null, [Validators.min(0), Validators.max(100)]);
+    discountControl.setValue(this.product.discount);
+    this.productForm.addControl('discount', discountControl);
+
+    const retailPriceControl = new FormControl(null, [Validators.required, Validators.min(0)]);
+    retailPriceControl.setValue(this.product.retailPrice);
+    this.productForm.addControl('retailPrice', retailPriceControl);
+
+    const bulkPriceControl = new FormControl(null, [Validators.required, Validators.min(0)]);
+    bulkPriceControl.setValue(this.product.bulkPrice);
+    this.productForm.addControl('bulkPrice', bulkPriceControl);
+
+    const videoUrlControl = new FormControl();
+    this.productForm.addControl('videoUrl', videoUrlControl);
+
+    const categoryControl = new FormControl(null, [Validators.required]);
+    categoryControl.setValue(this.product.category);
+    this.productForm.addControl('category', categoryControl);
+
+    if (this.product.attributes === undefined) {
+      this.product.attributes = [];
+    }
+
+    const attributesArray = new FormArray([], [Validators.required]);
+    this.product.attributes.forEach(attribute => {
+      const attributeControl = new FormControl();
+      attributeControl.setValue(attribute);
+      attributesArray.push(attributeControl);
+    });
+    this.productForm.addControl('attributes', attributesArray);
+
+    const filesArray = new FormArray([], [Validators.required]);
+    this.productForm.addControl('files', filesArray);
+    if (this.product.images !== undefined) {
+      this.product.images.forEach(image => {
+        const fileControl: FormControl = new FormControl();
+        fileControl.setValue(image);
+        filesArray.push(fileControl);
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -67,47 +111,53 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   setFiles(event) {
     const files: FileList = event.target.files;
-    Array.from(files).forEach(file =>
-      this.imagesToUpload
-        .push(
-          new UploadImage(
-            this.sanitizeFileUrl(file),
-            file
-          )
-        )
-    );
+    const filesArray: FormArray = <FormArray> this.productForm.get('files');
+    Array.from(files).forEach(file => {
+      const uploadImage = new UploadImage(this.sanitizeFileUrl(file), file);
+      const fileControl = new FormControl();
+      fileControl.setValue(uploadImage);
+      filesArray.push(fileControl);
+    });
+
   }
 
   removeImage(index: number) {
-    this.imagesToUpload.splice(index, 1);
+    const filesArray: FormArray = <FormArray> this.productForm.get('files');
+    filesArray.removeAt(index);
   }
 
-  addAttribute(attributes: Attribute[]) {
+  bytesToSize(bytes: number): string {
+    const sizes: string[] = ['B', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) {
+      return '0 B';
+    }
+    const i: number = Math.floor(Math.log(bytes) / Math.log(1024));
+    return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+  }
+
+  getProductAttributes() {
+    const attributesArray: FormArray = <FormArray> this.productForm.get('attributes');
+    return attributesArray.controls.map(control => {
+      return control.value;
+    });
+  }
+
+  getProductImages() {
+    const images: FormArray = <FormArray> this.productForm.get('files');
+    return images.controls.map(control => control.value);
+  }
+
+  emitAttribute(attribute: ProductAttribute) {
+    console.log(attribute);
+    this.productAttributeSelected.emit(attribute);
     this.attribute.clear();
     const factory = this.resolver.resolveComponentFactory(AttributeSelectorComponent);
     const newAttribute = this.attribute.createComponent(factory);
-    newAttribute.instance.attributes = attributes;
+    newAttribute.instance.attributes = this.attributes;
     newAttribute.instance.parent = this;
-    const newAttributeSubscription = newAttribute.instance.attributeRef
-      .subscribe(selected => this.productAttributeSelected = selected);
-    newAttribute.onDestroy(() => {
-      newAttributeSubscription.unsubscribe();
-    });
+    newAttribute.instance.getAttrValues(attribute);
     this.attributeRef = newAttribute;
     return newAttribute;
-  }
-
-  addProductAttribute() {
-    this.attribute.clear();
-    this.product.attributes.push(this.attributeRef.instance.productAttribute);
-    console.log(this.product.attributes);
-  }
-
-  deleteAttribute(id: string) {
-    const indexPa = this.product.attributes.findIndex(pa => pa.id === id);
-    if (indexPa !== -1) {
-      this.product.attributes.splice(indexPa, 1);
-    }
   }
 
   sanitizeUrl(url: string): SafeUrl {
@@ -122,8 +172,24 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     return this.sanitizeUrl(this.createTempUrl(file));
   }
 
-  assignCategory(category: Category) {
-    this.product.category = category;
+  assignCategory() {
+    const category: Category = this.productForm.get('category').value;
+    let attributes = [];
+    attributes.push(...category.attributes);
+    let parent: Category = category.parent;
+    while (parent !== undefined && parent !== null) {
+      attributes.push(...parent.attributes);
+      parent = parent.parent;
+    }
+    attributes = attributes.filter(a => a !== undefined)
+      .map(a => new ProductAttribute(a.id, a.priority, a.name));
+    const attributesArray: FormArray = <FormArray> this.productForm.get('attributes');
+    attributesArray.setValue([]);
+    attributes.forEach(attribute => {
+      const attributeControl = new FormControl();
+      attributeControl.setValue(attribute);
+      attributesArray.push(attributeControl);
+    });
   }
 
   onCategoryPresent() {
@@ -132,8 +198,13 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSimpleProduct() {
-    const data = {};
+  getProductDto() {
+    const data = {
+      productId: this.product.id,
+      productBase: {
+
+      }
+    };
     for (const prop in this.product.i18n) {
       if (this.product.i18n.hasOwnProperty(prop)) {
         data[prop] = this.product.i18n[prop];
@@ -151,6 +222,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   submitProduct() {
-    console.log(this.product);
+    console.log(this.productForm);
   }
 }

@@ -15,13 +15,65 @@ input[type='number'] {
   -moz-appearance:textfield;
 }
 
-input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input, textarea, select {
-  outline: none;
-  box-shadow:none !important;
-  border:1px solid #ccc !important;
+.form-control {
+  display: inline-block !important;
+  line-height: 2.5;
+  font-size: 14px;
+  color: #606060;
+  text-transform: none;
+  border: 2px solid #ededed;
+  border-radius: 5px !important;
+  background-color: #fff;
+  transition: all 0.3s;
+  z-index: 1;
+}
+
+.form-control:focus {
+  border-color: #77cde3 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.form-control:focus.ng-valid {
+  border-color: #a7c04d !important;
+}
+
+.form-control:focus.ng-dirty.ng-invalid {
+  border-color: #ef0568 !important;
+}
+
+.input-wrapper {
+  padding-left: 0 !important;
+  margin-right: 5px;
+  width: 80%;
+  display: inline-block;
+  position: relative;
+}
+
+.input-wrapper .fa-check {
+  position: absolute;
+  top: 30%;
+  right: 3%;
+  color: #a7c04d;
+  z-index: 10;
+}
+
+.input-wrapper .fa-times {
+  position: absolute;
+  top: 30%;
+  right: 3%;
+  color: #ef0568;
+  z-index: 10;
+}
+
+.custom-select {
+  display: inline-block;
+  min-height: 38px;
+  max-height: 78px !important;
+  height: 100% !important;
 }

@@ -1,14 +1,23 @@
 <li class="list-group-item border-0" style="padding-top: 0">
   <div class="form-group">
-    <select (change)="getAttrValues($event.target.value, attributeValue)"
-            name="attributeRefName" id="product-attribute" class="custom-select" #attributeName>
-      <option></option>
-      <ng-template ngFor let-attribute [ngForOf]="attributes">
-        <option *ngIf="!isPresent(attribute)" [value]="attribute.id">
-          {{attribute.name}}
-        </option>
-      </ng-template>
-    </select>
+    <!--<select (change)="getAttrValues($event.target.value, attributeValue)"-->
+            <!--name="attributeRefName" id="product-attribute" class="custom-select" #attributeName>-->
+      <!--<option></option>-->
+      <!--<ng-template ngFor let-attribute [ngForOf]="attributes">-->
+        <!--<option *ngIf="!isPresent(attribute)" [value]="attribute.id">-->
+          <!--{{attribute.name}}-->
+        <!--</option>-->
+      <!--</ng-template>-->
+    <!--</select>-->
+    <div class="d-inline-flex">
+      <h3 class="text-lowercase text-muted">{{productAttribute.name}}</h3>
+      <div *ngIf="productAttribute !== undefined && productAttribute.values !== undefined">
+        <div class="badge badge-pill badge-dark" *ngFor="let value of productAttribute.values">
+          <span>{{value.name}}</span>
+          <span class="times" (click)="deleteValue(value.id)">&nbsp;&times;</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="form-group" [hidden]="hideValues">
     <div class="input-group">
@@ -16,16 +25,9 @@
               id="product-attribute-value" class="custom-select" #attributeValue>
       </select>
       <div class="input-group-append">
-        <span (click)="onAttributeValueSelected(attributeName.value, attributeValue.value)" class="input-group-text">
+        <span (click)="onAttributeValueSelected(attributeValue.value)" class="input-group-text">
            <i class="fa fa-plus"></i>
         </span>
-      </div>
-    </div>
-    <div *ngIf="productAttribute.values !== undefined">
-      <div class="badge badge-pill badge-dark"
-            *ngFor="let value of productAttribute.values">
-        <span>{{value.name}}</span>
-        <span class="times" (click)="deleteValue(value.id)">&nbsp;&times;</span>
       </div>
     </div>
   </div>

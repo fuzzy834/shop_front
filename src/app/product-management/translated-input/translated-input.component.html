@@ -1,25 +1,32 @@
-<div class="input-group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">{{title}}</span>
+<div class="row" [formGroup]="parentForm">
+  <div class="input-wrapper">
+    <ng-template [ngIf]="textarea" [ngIfElse]="input">
+        <textarea class="form-control" style="resize: none" type="text"
+                  *ngFor="let language of languages"
+                  [placeholder]="title"
+                  [formControlName]="name + '-' + language.code"
+                  [hidden]="language.code !== langSelect.value"
+                  [name]="name"
+                  [lang]="language.code"
+                  [id]="name + '-' + language.code"></textarea>
+    </ng-template>
+    <ng-template #input>
+      <input class="form-control" type="text"
+             *ngFor="let language of languages"
+             [placeholder]="title"
+             [formControlName]="name + '-' + language.code"
+             [hidden]="language.code !== langSelect.value"
+             [name]="name"
+             [lang]="language.code"
+             [id]="name + '-' + language.code">
+    </ng-template>
+    <span class="fa fa-check" *ngIf="isValid(langSelect)"></span>
+    <span class="fa fa-times" *ngIf="!isValid(langSelect) && isDirty(langSelect)"></span>
   </div>
-  <div *ngIf="textarea; else input" class="textarea-container">
-      <textarea class="form-control rounded-0" style="resize: none" type="text" *ngFor="let language of languages"
-                [hidden]="language.code !== langSelect.value"
-                [(ngModel)]="obj.i18n[name][language.code]"
-                [name]="name" [lang]="language.code" [id]="name + '-' + language.code"></textarea>
-  </div>
-  <ng-template #input>
-    <input class="form-control rounded-0" type="text" *ngFor="let language of languages"
-           [hidden]="language.code !== langSelect.value"
-           [(ngModel)]="obj.i18n[name][language.code]"
-           [name]="name" [lang]="language.code" [id]="name + '-' + language.code">
-  </ng-template>
-  <div class="input-group-append">
-              <span class="input-group-text">
-                <select class="custom-select translation" (change)="cd.detectChanges()" #langSelect>
-                  <option *ngFor="let language of languages" [value]="language.code">{{language.name}}</option>
-                </select>
-              </span>
+  <div class="lang-select">
+    <select class="form-control custom-select" (change)="cd.detectChanges()" #langSelect>
+      <option *ngFor="let language of languages" [value]="language.code">{{language.name}}</option>
+    </select>
   </div>
 </div>
 

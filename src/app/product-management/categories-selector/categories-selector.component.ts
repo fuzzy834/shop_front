@@ -9,7 +9,6 @@ import {CategoryService} from '../../category.service';
 })
 export class CategoriesSelectorComponent implements OnInit {
 
-  categories: Category[];
   categoriesFlat: Category[] = [];
 
   @Input() selectedId: string;
@@ -19,17 +18,7 @@ export class CategoriesSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.categories = this.categoryService.categories;
-    this.flatCategories(this.categories);
-  }
-
-  flatCategories(categories: Category[]) {
-    for (const item of categories) {
-      this.categoriesFlat.push(item);
-      if (item.children.length > 0) {
-        this.flatCategories(item.children);
-      }
-    }
+    this.categoriesFlat = this.categoryService.flatCategories;
   }
 
   onCategorySelected(event) {

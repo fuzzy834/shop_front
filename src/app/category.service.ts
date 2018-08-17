@@ -1,26 +1,99 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Category} from '../model/category';
 import {AttributeService} from './attribute.service';
+import {LanguageService} from './language.service';
+import {HttpClient} from '@angular/common/http';
+import {Language} from '../model/language';
+import {Observable, Subscription} from 'rxjs';
+import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryService {
+export class CategoryService implements OnDestroy {
 
   categories: Category[] = [];
+  flatCategories: Category[] = [];
+  language: Language;
+  subscriptions: Subscription[] = [];
 
-  constructor(private attributeService: AttributeService) {
-    const c1: Category = new Category('1', 'category1', null, [attributeService.attributes[0]], []);
-    const c2: Category = new Category('2', 'category2', c1, [attributeService.attributes[1]], []);
-    const c3: Category = new Category('3', 'category3', c2, [attributeService.attributes[2]], []);
-    const c4: Category = new Category('4', 'category4', c3, [attributeService.attributes[3]], []);
-    const c5: Category = new Category('5', 'category5', c4, [attributeService.attributes[4]], []);
-
-    c1.children.push(c2);
-    c2.children.push(c3);
-    c3.children.push(c4);
-    c4.children.push(c5);
-
-    this.categories.push(c1);
+  constructor(private http: HttpClient, private attributeService: AttributeService, private languageService: LanguageService) {
+    this.subscriptions.push(languageService.lang.subscribe(language => this.language = language));
   }
+
+  getCategories() {
+    return new Promise((resolve) => {
+      this.http.get('http://localhost:8080/categories').subscribe((response) => {
+          this.attributeService.getAttributes().then(() => {
+            this.resolveCategories(response);
+            resolve(true);
+          });
+        });
+    });
+  }
+
+  resolveCategories(json: any, parent?: Category) {
+    for (const c of json) {
+      const category = this.resolveCategory(c);
+      let index = -1;
+      if (parent !== undefined) {
+        index = parent.children.findIndex(ca => ca.id === category.id);
+        if (index === -1) {
+          parent.children.push(category);
+        } else {
+          parent.children[index] = category;
+        }
+        parent.children.forEach(child => child.parent = parent);
+      } else {
+        index = this.categories.findIndex(ca => ca.id === category.id);
+        if (index === -1) {
+          this.categories.push(category);
+        } else {
+          this.categories[index] = category;
+        }
+      }
+      index = this.flatCategories.findIndex(ca => ca.id === category.id);
+      if (index === -1) {
+        this.flatCategories.push(category);
+      } else {
+        this.flatCategories[index] = category;
+      }
+    }
+  }
+
+  resolveCategory(c: any) {
+    const category: Category = new Category();
+    category.id = c.id;
+    category.children = [];
+    if (c.name.translated) {
+      category.name = c.name.localizedName[this.language.code];
+      category.i18n['name'] = c.name.localizedName;
+      this.subscriptions.push(this.languageService.lang.subscribe(
+        language => {
+          category.name = category.i18n['name'][language.code];
+        }
+      ));
+    } else {
+      category.name = c.name.nonLocalizedName;
+    }
+    category.attributes = [];
+    if (c.hasOwnProperty('attributes')) {
+      for (const a of c.attributes) {
+        const attr = this.attributeService.findAttributeById(a);
+        category.attributes.push(attr);
+      }
+    }
+    if (c.hasOwnProperty('children')) {
+      this.resolveCategories(c.children, category);
+    }
+    return category;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+}
+
+export function categoriesProviderFactory(categoryService: CategoryService) {
+  return () => categoryService.getCategories();
 }

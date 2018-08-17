@@ -1,8 +1,5 @@
-.translation {
-  border: none !important;
-  background-color: #e9ecef;
+.row {
+  margin-left: 0;
 }
 
-.textarea-container {
-  flex-grow: 1;
-}
+

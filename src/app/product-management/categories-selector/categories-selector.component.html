@@ -1,4 +1,7 @@
-<select class="custom-select" (change)="onCategorySelected($event)" autocomplete="off">
-  <option></option>
-  <option *ngFor="let category of categoriesFlat" [selected]="selectedId === category.id" [value]="category.id">{{category.name}}</option>
-</select>
+<div class="input-wrapper">
+  <select class="form-control custom-select" (change)="onCategorySelected($event)" autocomplete="off">
+    <option *ngFor="let category of categoriesFlat" [selected]="selectedId === category.id" [value]="category.id">
+      {{category.name}}
+    </option>
+  </select>
+</div>

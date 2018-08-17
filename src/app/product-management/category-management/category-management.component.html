@@ -1,5 +1,5 @@
 <ul class="list-group list-group-flush">
-  <li *ngFor="let cat of categoriesSelector.categoriesFlat" class="list-group-item">
+  <li *ngFor="let cat of categoriesFlat" class="list-group-item">
     {{cat.name}}
     <div class="btn-group pull-right">
       <button class="btn btn-sm btn-outline-dark" (click)="editCategory(cat)" [appModal]="categoryModal">
@@ -12,41 +12,43 @@
 <br>
 <div>
   <button type="button" class="btn btn-outline-dark" [appModal]="categoryModal" (click)="editCategory(null)">
-    Створити категорію
+    {{languageService.i18n['add.category']}}
   </button>
 </div>
-
 
 <div class="modal fade" id="category-modal" tabindex="-1" #categoryModal>
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Нова категорія</h5>
+        <h5 class="modal-title">{{languageService.i18n['new.category']}}</h5>
         <button type="button" class="close" [appModal]="categoryModal">
           <span>&times;</span>
         </button>
       </div>
 
       <div class="modal-body">
-        <form action="#" autocomplete="off">
+        <form action="#" autocomplete="off" [formGroup]="categoryForm">
           <div class="form-group">
             <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Батьківська категорія</span>
-              </div>
-              <app-categories-selector
-                [selectedId]="(category.parent === undefined || category.parent === null) ? '' : category.parent.id"
-                (selection)="assignParent($event)"></app-categories-selector>
+              <select [formControlName]="'parent'" class="form-control custom-select" #parentSelect>
+                <option></option>
+                <option *ngFor="let cat of getAssignableParents()" [ngValue]="cat">{{cat.name}}</option>
+              </select>
             </div>
           </div>
           <div class="form-group">
-            <app-translated-input [obj]="category" [title]="'Категорія'" [name]="'name'"
-                                  [textarea]="false"></app-translated-input>
+            <app-translatable-field [parentForm]="categoryForm"
+                                    [object]="category"
+                                    [fieldTitle]="'Категорія'"
+                                    [fieldName]="'name'"
+                                    [textarea]="false">
+
+            </app-translatable-field>
           </div>
           <div class="form-group">
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text">Атрибути</span>
+                <span class="input-group-text">{{languageService.i18n['attributes.category']}}</span>
               </div>
               <select class="custom-select" #attributeSelect>
                 <option *ngFor="let attribute of attributes" [value]="attribute.id">{{attribute.name}}</option>
@@ -56,7 +58,7 @@
               </div>
             </div>
             <div id="selected-attributes">
-              <div class="badge badge-pill badge-dark" *ngFor="let attribute of category.attributes; let i = index"
+              <div class="badge badge-pill badge-dark" *ngFor="let attribute of categoryForm.get('attributes').value; let i = index"
                    data-index="i">
                 <span>{{attribute.name}}</span>
                 <span class="times" (click)="deleteAttribute(attribute.id)">&nbsp;&times;</span>
@@ -66,7 +68,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark">Зберегти</button>
+        <button type="button" class="btn btn-outline-dark" [appModal]="categoryModal" (click)="submitForm()">{{languageService.i18n['save.category']}}</button>
+        <button type="button" class="btn btn-outline-dark" [appModal]="categoryModal" (click)="resetForm()">Скасувати</button>
       </div>
     </div>
   </div>

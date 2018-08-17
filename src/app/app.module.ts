@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -7,7 +7,7 @@ import { ProductComponent } from './product/product.component';
 import { CatalogComponent } from './catalog/catalog.component';
 import { CategoryListComponent } from './category-list/category-list.component';
 import { PageContentComponent } from './page-content/page-content.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AttributeSelectorComponent } from './product-management/attribute-selector/attribute-selector.component';
 import { CategoriesSelectorComponent } from './product-management/categories-selector/categories-selector.component';
 import { CategoryManagementComponent } from './product-management/category-management/category-management.component';
@@ -21,6 +21,11 @@ import { CurrencyManagementComponent } from './product-management/currency-manag
 import {Routes, RouterModule} from '@angular/router';
 import { ModalDirective } from './modal.directive';
 import {ProductManagementComponent} from './product-management/product-management.component';
+import {HttpClientModule} from '@angular/common/http';
+import {currentLanguageProviderFactory, languageProviderFactory, LanguageService} from './language.service';
+import {AttributeService} from './attribute.service';
+import {categoriesProviderFactory, CategoryService} from './category.service';
+import { TranslatableFieldComponent } from './product-management/translatable-field/translatable-field.component';
 
 const routes: Routes = [
     {path: 'catalog', component: CatalogComponent},
@@ -29,7 +34,7 @@ const routes: Routes = [
         {path: '', component: ProductManagementComponent},
         {path: 'categories', component: CategoryManagementComponent},
         {path: 'attributes', component: AttributeManagementComponent},
-        {path: 'languages', component: LanguageManagementComponent},
+        {path: 'languages', component: LanguageManagementComponent, resolve: {availableLanguages: LanguageService}},
         {path: 'currencies', component: CurrencyManagementComponent}
     ]},
   ];
@@ -54,14 +59,22 @@ const routes: Routes = [
     AttributeValueComponent,
     LanguageManagementComponent,
     CurrencyManagementComponent,
-    ModalDirective
+    ModalDirective,
+    TranslatableFieldComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [
+    {provide: APP_INITIALIZER, useFactory: languageProviderFactory, deps: [LanguageService], multi: true},
+    {provide: APP_INITIALIZER, useFactory: currentLanguageProviderFactory, deps: [LanguageService], multi: true},
+    {provide: APP_INITIALIZER, useFactory: categoriesProviderFactory,
+      deps: [CategoryService, AttributeService, LanguageService], multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

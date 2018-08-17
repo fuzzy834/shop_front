@@ -2,9 +2,7 @@
   <li class="list-group-item" *ngFor="let language of languages">
     {{language.name}}
     <div class="btn-group pull-right">
-      <button class="btn btn-sm btn-outline-dark" (click)="editLanguage(language)" [appModal]="languageModal"><i
-        class="fa fa-pencil"></i></button>
-      <button class="btn btn-sm btn-outline-dark" (click)="deleteLanguage(language)"><i class="fa fa-trash"></i>
+      <button *ngIf="languages.length > 1" class="btn btn-sm btn-outline-dark" (click)="deleteLanguage(language)"><i class="fa fa-trash"></i>
       </button>
     </div>
   </li>
@@ -12,7 +10,7 @@
 <br>
 <div>
   <button (click)="resetLanguage()" type="button" class="btn btn-outline-dark" [appModal]="languageModal">
-    Додати мову
+    {{languageService.i18n['add.language']}}
   </button>
 </div>
 
@@ -20,34 +18,23 @@
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Нова мова</h5>
+        <h5 class="modal-title">{{languageService.i18n['new.language']}}</h5>
         <button type="button" class="close" [appModal]="languageModal">
           <span>&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <form action="#" autocomplete="off">
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Назва</span>
-              </div>
-              <input [(ngModel)]="language.name" name="name" type="text" class="form-control">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Код</span>
-              </div>
-              <input [(ngModel)]="language.code" name="code" type="text" class="form-control">
-            </div>
-          </div>
+          <select (change)="onLanguageSelected($event)">
+            <option *ngFor="let language of availableLanguages">
+              {{language.name}}&nbsp;({{language.code}})
+            </option>
+          </select>
         </form>
       </div>
       <div class="modal-footer">
-        <button (click)="addLanguage(language)" [appModal]="languageModal" type="button"
-                class="btn btn-outline-dark">Зберегти
+        <button (click)="addLanguage()" [appModal]="languageModal" type="button"
+                class="btn btn-outline-dark">{{languageService.i18n['save.language']}}
         </button>
       </div>
     </div>

@@ -1,29 +1,79 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Attribute} from '../model/attribute';
 import {Value} from '../model/value';
+import {HttpClient} from '@angular/common/http';
+import {Language} from '../model/language';
+import {LanguageService} from './language.service';
+import {Subscription} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AttributeService {
+export class AttributeService implements OnDestroy {
 
   attributes: Attribute[] = [];
+  language: Language;
+  subscriptions: Subscription[] = [];
 
-  constructor() {
-    const v1: Value = new Value('1', 'value1');
-    const v2: Value = new Value('2', 'value2');
-    const v3: Value = new Value('3', 'value3');
-    const v4: Value = new Value('4', 'value4');
-    const v5: Value = new Value('5', 'value5');
+  constructor(private http: HttpClient, private languageService: LanguageService) {
+    this.subscriptions.push(languageService.lang.subscribe(language => this.language = language));
+  }
 
-    const values: Value[] = [v1, v2, v3, v4, v5];
+  getAttributes() {
+    return new Promise(resolve => {
+      this.http.get('http://localhost:8080/attributes').subscribe(response => {
+        this.buildAttributes(response);
+        resolve(true);
+      });
+    });
+  }
 
-    const a1 = new Attribute('1', 'attribute1', 1, values);
-    const a2 = new Attribute('2', 'attribute2', 2, values);
-    const a3 = new Attribute('3', 'attribute3', 3, values);
-    const a4 = new Attribute('4', 'attribute4', 4, values);
-    const a5 = new Attribute('5', 'attribute5', 5, values);
+  buildAttributes(json: any) {
+    for (const a of json) {
+      const attribute = new Attribute();
+      attribute.id = a.attributeId;
+      attribute.priority = a.priority;
+      if (a.name.translated) {
+        attribute.name = a.name.localizedName[this.language.code];
+        attribute.i18n['name'] = a.name.localizedName;
+        this.subscriptions.push(this.languageService.lang.subscribe(
+          language => {
+            attribute.name = attribute.i18n['name'][language.code];
+          }
+        ));
+      } else {
+        attribute.name = a.name.nonLocalizedName;
+      }
+      attribute.values = [];
+      for (const v of a.values) {
+        attribute.values.push(this.buildAttributeValue(v));
+      }
+      this.attributes.push(attribute);
+    }
+  }
 
-    this.attributes.push(...[a1, a2, a3, a4, a5]);
+  buildAttributeValue(json: any): Value {
+      const value = new Value();
+      value.id = json.id;
+      if (json.translated) {
+        value.value = json.localizedName[this.language.code];
+        value.i18n['value'] = json.localizedName;
+        this.subscriptions.push(this.languageService.lang.subscribe(
+          language => {
+            value.value = value.i18n['value'][language.code];
+          }
+        ));
+      } else {
+        value.value = json.value;
+      }
+      return value;
+  }
+
+  findAttributeById(id: string): Attribute {
+    return this.attributes.find(attribute => attribute.id === id);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

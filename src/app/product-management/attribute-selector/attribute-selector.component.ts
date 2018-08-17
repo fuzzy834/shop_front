@@ -11,13 +11,13 @@ import {Value} from '../../../model/value';
 })
 export class AttributeSelectorComponent implements OnInit {
 
-  productAttribute: ProductAttribute = new ProductAttribute();
+  productAttribute: ProductAttribute;
   parent: ProductManagementComponent;
   attributes: Attribute[];
   hideValues = true;
 
-  @Output() attributeRef = new EventEmitter<boolean>();
-  @Output() attributeToDelete = new EventEmitter<{ id: string, index: number }>();
+  // @Output() attributeRef = new EventEmitter<boolean>();
+  // @Output() attributeToDelete = new EventEmitter<{ id: string, index: number }>();
 
   @ViewChild('attributeName') attribute: ElementRef<HTMLSelectElement>;
   @ViewChild('attributeValue') value: ElementRef<HTMLSelectElement>;
@@ -28,28 +28,30 @@ export class AttributeSelectorComponent implements OnInit {
   ngOnInit() {
   }
 
-  getAttrValues(id: string, value: HTMLSelectElement) {
-    this.productAttribute = new ProductAttribute();
-    value.options.length = 0;
-    const attr = this.attributes.find(attribute => attribute.id === id);
+  getAttrValues(productAttribute: ProductAttribute) {
+    console.log('called');
+    this.productAttribute = productAttribute;
+    console.log(productAttribute);
+    this.value.nativeElement.options.length = 0;
+    const attr = this.attributes.find(attribute => attribute.id === productAttribute.id);
     if (attr !== undefined) {
       const values = attr.values;
       values.forEach(val => {
         const option = document.createElement('option');
         option.value = val.id;
         option.text = val.value;
-        value.add(option);
+        this.value.nativeElement.add(option);
       });
       this.hideValues = false;
     } else {
       this.hideValues = true;
-      this.attributeRef.emit(false);
+      // this.attributeRef.emit(false);
     }
   }
 
-  onAttributeValueSelected(id: string, valueId: string) {
+  onAttributeValueSelected(valueId: string) {
     if (valueId !== '') {
-      const attribute: Attribute = this.attributes.find(a => a.id === id);
+      const attribute: Attribute = this.attributes.find(a => a.id === this.productAttribute.id);
       const value: Value = attribute.values.find(v => v.id === valueId);
       this.productAttribute.id = attribute.id;
       this.productAttribute.name = attribute.name;
@@ -59,7 +61,7 @@ export class AttributeSelectorComponent implements OnInit {
       }
       if (this.productAttribute.values.findIndex(v => v.id === value.id) === -1) {
         this.productAttribute.values.push({id: value.id, name: value.value});
-        this.attributeRef.emit(true);
+        // this.attributeRef.emit(true);
       }
     }
   }

@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Language} from '../../../model/language';
 import {LanguageService} from '../../language.service';
+import {ActivatedRoute, Data} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-language-management',
@@ -9,36 +11,44 @@ import {LanguageService} from '../../language.service';
 })
 export class LanguageManagementComponent implements OnInit {
 
-  language: Language = new Language();
-
+  availableLanguages: Language[] = [];
   languages: Language[];
+  language: Language;
 
-  constructor(private languageService: LanguageService) {
+  constructor(private route: ActivatedRoute, private languageService: LanguageService, private http: HttpClient) {
   }
 
   ngOnInit() {
     this.languages = this.languageService.languages;
+    this.route.data.subscribe(
+      (data: Data) => {
+        this.availableLanguages = data['availableLanguages'];
+        this.language = this.availableLanguages[0];
+      }
+    );
+  }
+
+  onLanguageSelected(event) {
+    this.language = this.availableLanguages[event.target.selectedIndex];
+    console.log(this.language);
   }
 
   deleteLanguage(language: Language) {
-    const index = this.languages.findIndex(lang => lang === language);
-    this.languages.splice(index, 1);
+    this.http.delete('http://localhost:8080/language/delete/' + language.id).subscribe(
+      () => {
+        const index = this.languages.findIndex(lang => lang === language);
+        this.languages.splice(index, 1);
+      }
+    );
   }
 
-  addLanguage(language: Language) {
-    const index = this.languages.findIndex(lang => lang.id === this.language.id);
-    if (language.id === undefined) {
-      this.languages.push(language);
-    } else {
-      this.languages[index] = language;
-    }
-  }
-
-  editLanguage(language: Language) {
-    this.language = language;
+  addLanguage() {
+    this.http.post<Language>('http://localhost:8080/language/add', this.language).subscribe(
+      lang => this.languages.push(lang)
+    );
   }
 
   resetLanguage() {
-    this.language = new Language();
+    this.language = this.availableLanguages[0];
   }
 }

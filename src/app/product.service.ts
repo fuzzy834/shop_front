@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Product} from '../model/product';
 import {ProductAttribute} from '../model/product.attribute';
 import {CategoryService} from './category.service';
+import {HttpClient, HttpRequest} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class ProductService {
 
   products: Product[] = [];
 
-  constructor(private categoryService: CategoryService) {
+  constructor(private categoryService: CategoryService, private http: HttpClient) {
     const attr1: ProductAttribute = new ProductAttribute('1', 1, 'attribute1', [{id: '1', name: 'value1'}]);
     const attr2: ProductAttribute = new ProductAttribute('2', 2, 'attribute2', [{id: '2', name: 'value2'}]);
     const attr3: ProductAttribute = new ProductAttribute('3', 3, 'attribute3', [{id: '3', name: 'value3'}]);
@@ -27,7 +28,11 @@ export class ProductService {
       ' and more recently with desktop ' +
       'publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
 
-    const images = ['assets/img/brush.jpeg', 'assets/img/brush-2.jpeg', 'assets/img/brush-3.jpeg'];
+    const images = [
+      // 'assets/img/brush.jpeg',
+      // 'assets/img/brush-2.jpeg',
+      // 'assets/img/brush-3.jpeg'
+    ];
 
 
     const product1 = new Product('1', name, description, 999, 700, 20, 'UAH',

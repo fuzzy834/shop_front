@@ -5,7 +5,7 @@ import {LanguageService} from '../../language.service';
 import {Category} from '../../../model/category';
 import {AttributeValueComponent} from './attribute-value/attribute-value.component';
 import {Language} from '../../../model/language';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {AttributeService} from '../../attribute.service';
 import {CategoryService} from '../../category.service';
 
@@ -15,10 +15,9 @@ import {CategoryService} from '../../category.service';
   styleUrls: ['./attribute-management.component.css']
 })
 export class AttributeManagementComponent implements OnInit {
-
+  attributeForm = new FormGroup({});
   languages: Language[];
   attributes: Attribute[];
-  categories: Category[];
   attribute: Attribute = new Attribute();
   editedValue = [];
 
@@ -26,14 +25,12 @@ export class AttributeManagementComponent implements OnInit {
   @ViewChild('modalTrigger') modalTrigger: ElementRef;
 
   constructor(private languageService: LanguageService,
-              private attributeService: AttributeService,
-              private categoryService: CategoryService) {
+              private attributeService: AttributeService) {
   }
 
   ngOnInit() {
     this.languages = this.languageService.languages;
     this.attributes = this.attributeService.attributes;
-    this.categories = this.categoryService.categories;
     this.attribute.values = [];
   }
 
@@ -83,6 +80,7 @@ export class AttributeManagementComponent implements OnInit {
   }
 
   saveAttribute() {
+    console.log(this.attributeForm);
     console.log(this.attribute);
   }
 }
